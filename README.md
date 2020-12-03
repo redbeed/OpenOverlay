@@ -17,6 +17,9 @@ $ composer require redbeed/openoverlay
 
 ``` bash
 php artisan vendor:publish --provider="Redbeed\OpenOverlay\OpenOverlayServiceProvider"
+php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="migrations"
+php artisan migrate
+php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="config"
 ```
 
 Add ENV Keys

@@ -32,6 +32,6 @@ class UserConnectionChanged
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('user.'.$this->user->id.'.connection.changed');
     }
 }
