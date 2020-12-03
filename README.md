@@ -15,7 +15,20 @@ Via Composer
 $ composer require redbeed/openoverlay
 ```
 
-## Usage
+``` bash
+php artisan vendor:publish --provider="Redbeed\OpenOverlay\OpenOverlayServiceProvider"
+```
+
+Add ENV Keys
+
+``` bash
+TWITCH_CLIENT_ID=
+TWITCH_CLIENT_SECRET=
+TWITCH_REDIRECT_URI=${APP_URL}/connection/callback
+
+OVERLAY_SECRET=
+OVERLAY_TWITCH_APP_TOKEN=
+```
 
 ## Change log
 
@@ -37,7 +50,8 @@ If you discover any security related issues, please email author email instead o
 
 ## Credits
 
-- [author name][link-author]
+- [redbeed][link-author]
+- [Chris Woelk][link-author-chris]
 - [All Contributors][link-contributors]
 
 ## License
@@ -54,4 +68,5 @@ license. Please see the [license file](license.md) for more information.
 [link-travis]: https://travis-ci.org/redbeed/openoverlay
 [link-styleci]: https://styleci.io/repos/12345678
 [link-author]: https://github.com/redbeed
+[link-author-chris]: https://github.com/redbeed
 [link-contributors]: ../../contributors

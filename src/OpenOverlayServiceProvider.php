@@ -3,6 +3,7 @@
 namespace Redbeed\OpenOverlay;
 
 use Illuminate\Support\ServiceProvider;
+use Redbeed\OpenOverlay\Console\ConsoleServiceProvider;
 
 class OpenOverlayServiceProvider extends ServiceProvider
 {
@@ -15,8 +16,9 @@ class OpenOverlayServiceProvider extends ServiceProvider
     {
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'redbeed');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'redbeed');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-         $this->loadRoutesFrom(__DIR__.'/routes/openoverlay.php');
+
+         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+         $this->loadRoutesFrom(__DIR__.'/../routes/openoverlay.php');
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
@@ -31,6 +33,9 @@ class OpenOverlayServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(ConsoleServiceProvider::class);
+
         $this->mergeConfigFrom(__DIR__.'/../config/openoverlay.php', 'openoverlay');
 
         // Register the service the package provides.
@@ -49,6 +54,7 @@ class OpenOverlayServiceProvider extends ServiceProvider
         return ['openoverlay'];
     }
 
+
     /**
      * Console-specific booting.
      *
@@ -60,23 +66,5 @@ class OpenOverlayServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/openoverlay.php' => config_path('openoverlay.php'),
         ], 'openoverlay.config');
-
-        // Publishing the views.
-        /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/redbeed'),
-        ], 'openoverlay.views');*/
-
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/redbeed'),
-        ], 'openoverlay.views');*/
-
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/redbeed'),
-        ], 'openoverlay.views');*/
-
-        // Registering package commands.
-        // $this->commands([]);
     }
 }

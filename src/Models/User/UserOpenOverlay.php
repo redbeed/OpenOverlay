@@ -6,6 +6,6 @@ trait UserOpenOverlay
 {
     public function connections()
     {
-        return $this->hasMany(Connections::class);
+        return $this->hasMany(Connection::class);
     }
 }
