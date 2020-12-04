@@ -29,15 +29,55 @@ Migrate User Connections & Twitch Event table
 php artisan migrate
 ```
 
+Add configuration to `config/services.php`
+
+```php
+'twitch' => [    
+  'client_id' => env('TWITCH_CLIENT_ID'),  
+  'client_secret' => env('TWITCH_CLIENT_SECRET'),  
+  'redirect' => env('TWITCH_REDIRECT_URI') 
+],
+'twitch_client_credentials' => [    
+  'client_id' => env('TWITCH_CLIENT_ID'),  
+  'client_secret' => env('TWITCH_CLIENT_SECRET'),  
+  'redirect' => env('TWITCH_APP_TOKEN_REDIRECT_URI') 
+],
+```
+_Thanks to [SocialiteProviders/Twitch][link-socialite]_
+
 Add ENV Keys
 
 ``` bash
 TWITCH_CLIENT_ID=
 TWITCH_CLIENT_SECRET=
 TWITCH_REDIRECT_URI=${APP_URL}/connection/callback
+TWITCH_APP_TOKEN_REDIRECT_URI=${APP_URL}/connection/app-token/callback
 
 OVERLAY_SECRET=
 OVERLAY_TWITCH_APP_TOKEN=
+```
+
+Add `UserOpenOverlay` trait to `User.php`
+
+``` php
+<?php
+
+namespace App\Models;
+
+...
+use \Redbeed\OpenOverlay\Models\User\UserOpenOverlay;
+
+class User extends Authenticatable
+{
+    use ...
+    use UserOpenOverlay;
+```
+
+Add Callback URLs to your Twitch App
+
+``` bash
+${APP_URL}/connection/callback
+${APP_URL}/connection/app-token/callback
 ```
 
 ### Generate APP Token
@@ -59,7 +99,7 @@ To subscribe the Twitch-EventSub you need to generate an App-Token.
     
     Set `regenerate` to `true`.
 
-2. Open `${APP_URL}/connection/api-token/redirect` with your laravel-app.
+2. Open `${APP_URL}/connection/app-token/redirect` with your laravel-app.
 3. Login into your Twitch-Developer account with your Twitch Application.
 4. Copy the App-Token and use it as value for your  `OVERLAY_TWITCH_APP_TOKEN` ENV value.
 
@@ -107,6 +147,7 @@ license. Please see the [license file](license.md) for more information.
 [link-packagist]: https://packagist.org/packages/redbeed/openoverlay
 [link-downloads]: https://packagist.org/packages/redbeed/openoverlay
 [link-travis]: https://travis-ci.org/redbeed/openoverlay
+[link-socialite]: https://github.com/SocialiteProviders/Twitch
 [link-styleci]: https://styleci.io/repos/12345678
 [link-author]: https://github.com/redbeed
 [link-author-chris]: https://github.com/redbeed
