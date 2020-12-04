@@ -5,6 +5,7 @@ namespace Redbeed\OpenOverlay\Console;
 use Illuminate\Support\ServiceProvider;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
+use Redbeed\OpenOverlay\Console\Commands\SecretCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class ConsoleServiceProvider extends ServiceProvider
         $this->commands([
             EventSubListingCommand::class,
             EventSubDeleteCommand::class,
+            SecretCommand::class,
         ]);
     }
 }
