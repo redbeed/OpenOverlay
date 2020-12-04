@@ -1,7 +1,7 @@
 {
     "name": "redbeed/openoverlay",
     "description": ":package_description",
-    "license": "license",
+    "license": "MIT",
     "authors": [
         {
             "name": "Chris Woelk",
@@ -10,7 +10,7 @@
         }
     ],
     "homepage": "https://github.com/redbeed/openoverlay",
-    "keywords": ["Laravel", "OpenOverlay"],
+    "keywords": ["Laravel", "OpenOverlay", "twitch"],
     "require": {
         "illuminate/support": "~7|~8",
         "guzzlehttp/guzzle": "^7.2",
@@ -42,5 +42,7 @@
                 "OpenOverlay": "Redbeed\\OpenOverlay\\Facades\\OpenOverlay"
             }
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
