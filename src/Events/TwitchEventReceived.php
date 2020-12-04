@@ -2,14 +2,15 @@
 
 namespace Redbeed\OpenOverlay\Events;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 
-class TwitchEventReceived implements ShouldBroadcast
+class TwitchEventReceived implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,13 +22,13 @@ class TwitchEventReceived implements ShouldBroadcast
         $this->event = $event;
     }
 
-    public function broadcastOn(): PresenceChannel
+    public function broadcastOn(): Channel
     {
-        return new PresenceChannel('twitch.'.$this->event->event_user_id.'.event');
+        return new Channel('twitch.'.$this->event->event_user_id);
     }
 
     public function broadcastAs(): string
     {
-        return 'twitch.event.send';
+        return 'event-received';
     }
 }
