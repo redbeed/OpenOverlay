@@ -15,11 +15,18 @@ Via Composer
 $ composer require redbeed/openoverlay
 ```
 
+### Configuring
+
+Add laravel config for OpenOverlay
+
 ``` bash
 php artisan vendor:publish --provider="Redbeed\OpenOverlay\OpenOverlayServiceProvider"
-php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="migrations"
+```
+
+Migrate User Connections & Twitch Event table
+
+``` bash
 php artisan migrate
-php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="config"
 ```
 
 Add ENV Keys
@@ -31,6 +38,37 @@ TWITCH_REDIRECT_URI=${APP_URL}/connection/callback
 
 OVERLAY_SECRET=
 OVERLAY_TWITCH_APP_TOKEN=
+```
+
+### Generate APP Token
+To subscribe the Twitch-EventSub you need to generate an App-Token. 
+
+1. First you need to enable the "app token routes" in the `openoverlay.php` config.
+    ``` php
+    return [
+        ...
+        'webhook' => [
+            'twitch' => [
+                'app_token' => [
+                    'regenerate' => true,
+                ],
+            ]
+        ]
+        ...
+    ```
+    
+    Set `regenerate` to `true`.
+
+2. Open `${APP_URL}/connection/api-token/redirect` with your laravel-app.
+3. Login into your Twitch-Developer account with your Twitch Application.
+4. Copy the App-Token and use it as value for your  `OVERLAY_TWITCH_APP_TOKEN` ENV value.
+
+## Generate Secret
+To validate each Twitch call you need to generate a secret for your app.
+If you change the `OVERLAY_SECRET` you need to subscribe each event again.
+
+``` bash
+php artisan overlay:secret
 ```
 
 ## Change log
