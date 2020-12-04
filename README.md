@@ -63,7 +63,7 @@ To subscribe the Twitch-EventSub you need to generate an App-Token.
 3. Login into your Twitch-Developer account with your Twitch Application.
 4. Copy the App-Token and use it as value for your  `OVERLAY_TWITCH_APP_TOKEN` ENV value.
 
-## Generate Secret
+### Generate Secret
 To validate each Twitch call you need to generate a secret for your app.
 If you change the `OVERLAY_SECRET` you need to subscribe each event again.
 

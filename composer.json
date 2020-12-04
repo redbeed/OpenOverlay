@@ -10,7 +10,12 @@
         }
     ],
     "homepage": "https://github.com/redbeed/openoverlay",
-    "keywords": ["Laravel", "OpenOverlay", "twitch", "Eventsub"],
+    "keywords": [
+        "Laravel",
+        "OpenOverlay",
+        "twitch",
+        "Eventsub"
+    ],
     "require": {
         "illuminate/support": "~7|~8",
         "guzzlehttp/guzzle": "^7.2",
@@ -19,7 +24,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~9.0",
-        "orchestra/testbench": "~5|~6",
+        "orchestra/testbench": "^6.5",
         "nunomaduro/phpinsights": "^1.14"
     },
     "autoload": {
@@ -41,6 +46,10 @@
                 "OpenOverlay": "Redbeed\\OpenOverlay\\Facades\\OpenOverlay"
             }
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -19,8 +19,13 @@ Route::name('open_overlay.')->group(function () {
             Route::get('/callback')->uses([AuthController::class, 'handleProviderCallback'])
                 ->name('connection.callback');
 
+        });
+
+        Route::middleware(['web'])->group(function () {
+
             // prefix: /connection/app-token
             Route::prefix('app-token')->group(function () {
+
                 Route::get('/redirect')->uses([AppTokenController::class, 'redirect'])
                     ->name('connection.app-token.redirect');
 
@@ -28,6 +33,7 @@ Route::name('open_overlay.')->group(function () {
                     ->name('connection.app-token.callback');
 
             });
+
         });
 
         Route::middleware(['api'])->group(function () {
