@@ -31,4 +31,13 @@ class TwitchEventReceived implements ShouldBroadcastNow
     {
         return 'event-received';
     }
+
+    public function broadcastWith()
+    {
+        return [
+            'type' => $this->event->event_type,
+            'data' => $this->event->event_data,
+            'created_at' => $this->event->event_sent,
+        ];
+    }
 }
