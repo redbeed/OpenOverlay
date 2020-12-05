@@ -111,7 +111,7 @@ php artisan overlay:secret
 
 ## Send Fake Events
 
-You can send "Fake" Events while develop or test a overlay.
+You can send "Fake" Events while developing or testing an overlay.
 ``` bash
 php artisan {TwitchUserId} {EventType}
 php artisan 1337 channel.follow
