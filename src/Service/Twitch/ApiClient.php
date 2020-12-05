@@ -12,9 +12,6 @@ class ApiClient
     /** @var Client */
     protected $httpClient;
 
-    /** @var ApiClient */
-    private static $shared;
-
     /** @var array */
     protected $options = [];
 
@@ -33,7 +30,10 @@ class ApiClient
         ]);
     }
 
-    public static function http(): ApiClient
+    /**
+     * @return ApiClient
+     */
+    public static function http()
     {
         return new self();
     }
@@ -65,7 +65,7 @@ class ApiClient
 
     public function request(string $method, string $url): array
     {
-        $response = ApiClient::http()->request($method, $url, $this->options);
+        $response = $this->httpClient->request($method, $url, $this->options);
         $json = (string) $response->getBody();
 
         return json_decode($json, true);
