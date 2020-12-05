@@ -109,6 +109,14 @@ If you change the `OVERLAY_SECRET` you need to subscribe each event again.
 php artisan overlay:secret
 ```
 
+## Send Fake Events
+
+You can send "Fake" Events while develop or test a overlay.
+``` bash
+php artisan {TwitchUserId} {EventType}
+php artisan 1337 channel.follow
+```
+
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
