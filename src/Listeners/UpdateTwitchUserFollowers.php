@@ -16,11 +16,6 @@ class UpdateTwitchUserFollowers implements ShouldQueue
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
 
         $followerList = UsersClient::withAppToken($twitchConnection->service_token)
-            ->withOptions([
-                RequestOptions::QUERY => [
-                    'first' => 1,
-                ],
-            ])
             ->allFollowers($twitchConnection->service_user_id);
 
         foreach ($followerList['data'] as $followerData) {

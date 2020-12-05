@@ -22,7 +22,7 @@ class UsersClient extends ApiClient
         $firstResponse = $this
             ->withOptions([
                 RequestOptions::QUERY => [
-                    'first' => 1,
+                    'first' => 100,
                 ],
             ])->followers($userId);
 
