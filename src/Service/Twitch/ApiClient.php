@@ -15,6 +15,9 @@ class ApiClient
     /** @var ApiClient */
     private static $shared;
 
+    /** @var array */
+    protected $options = [];
+
     public function __construct()
     {
         $authCode = config('services.twitch.client_secret');
@@ -30,12 +33,41 @@ class ApiClient
         ]);
     }
 
-    public static function http(): Client
+    public static function http(): ApiClient
     {
-        if (self::$shared === null) {
-            self::$shared = new self();
-        }
+        return new self();
+    }
 
-        return self::$shared->httpClient;
+    public static function withAppToken(string $appToken): self
+    {
+        return (new self())->setOptions([
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer '.$appToken,
+            ],
+        ]);
+    }
+
+    public function withOptions(array $options): self
+    {
+        $self = clone $this;
+        $self->options = array_merge_recursive($this->options, $options);
+
+        return $self;
+    }
+
+    public function setOptions(array $options): self
+    {
+        $self = clone $this;
+        $self->options = $options;
+
+        return $self;
+    }
+
+    public function request(string $method, string $url): array
+    {
+        $response = ApiClient::http()->request($method, $url, $this->options);
+        $json = (string) $response->getBody();
+
+        return json_decode($json, true);
     }
 }

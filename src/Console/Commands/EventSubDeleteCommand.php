@@ -64,7 +64,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
             return;
         }
 
-        $eventSubClient = new EventSubClient();
+        $eventSubClient = EventSubClient::http();
         $subData = $eventSubClient->listSubscriptions();
         $subscriptions = $subData['data'];
 

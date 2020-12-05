@@ -3,19 +3,20 @@
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Log;
-use Psr\Http\Message\ResponseInterface;
 use Redbeed\OpenOverlay\Exceptions\AppTokenMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookCallbackMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookSecretMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookTwitchSignatureMissing;
 
-class EventSubClient
+class EventSubClient extends ApiClient
 {
-    /** @var array */
-    protected $headers = [];
+    public const BASE_URL = 'eventsub/subscriptions';
 
-    public function __construct()
+    /**
+     * @return EventSubClient
+     * @throws AppTokenMissing
+     */
+    public static function http()
     {
         $appToken = config('openoverlay.webhook.twitch.app_token.token');
 
@@ -23,8 +24,10 @@ class EventSubClient
             throw new AppTokenMissing('App Token is needed');
         }
 
-        $this->headers([
-            'Authorization' => 'Bearer '.$appToken,
+        return (new self())->setOptions([
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer '.$appToken,
+            ],
         ]);
     }
 
@@ -44,18 +47,6 @@ class EventSubClient
         return $hash === $messageSignature;
     }
 
-    public function headers($headers = []): self
-    {
-        $this->headers = array_merge($this->headers, $headers);
-
-        return $this;
-    }
-
-    protected function buildHeader($headers = []): array
-    {
-        return array_merge($this->headers, $headers);
-    }
-
     public function subscribe(string $type, string $webhookCallback, array $condition = []): array
     {
         $secret = config('openoverlay.webhook.twitch.secret');
@@ -68,9 +59,8 @@ class EventSubClient
             throw new WebhookSecretMissing('Secret is required');
         }
 
-        $response = ApiClient::http()->post(
-            'eventsub/subscriptions',
-            [
+        return $this
+            ->withOptions([
                 RequestOptions::JSON => [
                     'type' => $type,
                     'version' => '1',
@@ -78,39 +68,26 @@ class EventSubClient
                     'transport' => [
                         'method' => 'webhook',
                         'callback' => $webhookCallback.'?'.time(),
-                        'secret' => config('openoverlay.webhook.twitch.secret'),
+                        'secret' => $secret,
                     ],
                 ],
-                RequestOptions::HEADERS => $this->buildHeader(),
-            ]
-        );
-
-        return json_decode((string) $response->getBody(), true);
+            ])
+            ->request('POST', self::BASE_URL);
     }
 
-
-    public function deleteSubscription(string $id) {
-        $response = ApiClient::http()->delete(
-            'eventsub/subscriptions',
-            [
-                RequestOptions::HEADERS => $this->buildHeader(),
+    public function deleteSubscription(string $id)
+    {
+        return $this
+            ->withOptions([
                 RequestOptions::QUERY => [
                     'id' => $id,
-                ]
-            ]
-        );
-
-        return json_decode((string) $response->getBody(), true);
+                ],
+            ])
+            ->request('DELETE', self::BASE_URL);
     }
 
-    public function listSubscriptions() {
-        $response = ApiClient::http()->get(
-            'eventsub/subscriptions',
-            [
-                RequestOptions::HEADERS => $this->buildHeader(),
-            ]
-        );
-
-        return json_decode((string) $response->getBody(), true);
+    public function listSubscriptions()
+    {
+        return $this->request('GET', self::BASE_URL);
     }
 }
