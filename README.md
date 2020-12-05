@@ -2,8 +2,6 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![Build Status][ico-travis]][link-travis]
-[![StyleCI][ico-styleci]][link-styleci]
 
 Receive events from Twitch-EventSub Api with Laravel.
 
@@ -141,8 +139,6 @@ license. Please see the [license file](license.md) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/redbeed/openoverlay.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/redbeed/openoverlay.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/redbeed/openoverlay/master.svg?style=flat-square
-[ico-styleci]: https://styleci.io/repos/12345678/shield
 
 [link-packagist]: https://packagist.org/packages/redbeed/openoverlay
 [link-downloads]: https://packagist.org/packages/redbeed/openoverlay
