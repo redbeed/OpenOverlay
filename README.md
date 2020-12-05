@@ -146,5 +146,5 @@ license. Please see the [license file](license.md) for more information.
 [link-socialite]: https://github.com/SocialiteProviders/Twitch
 [link-styleci]: https://styleci.io/repos/12345678
 [link-author]: https://github.com/redbeed
-[link-author-chris]: https://github.com/redbeed
+[link-author-chris]: https://github.com/chris-redbeed
 [link-contributors]: ../../contributors
