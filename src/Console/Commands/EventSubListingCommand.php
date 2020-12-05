@@ -40,7 +40,7 @@ class EventSubListingCommand extends Command
      */
     public function handle()
     {
-        $eventSubClient = new EventSubClient();
+        $eventSubClient = EventSubClient::http();
         $subData = $eventSubClient->listSubscriptions();
 
         $this->subscriptionsTable($subData['data']);

@@ -17,7 +17,7 @@ class RegisterUserTwitchWebhooks
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->apiClient = new EventSubClient();
+        $this->apiClient = EventSubClient::http();
     }
 
     public static function registerAll(Connection $connection)
@@ -43,8 +43,6 @@ class RegisterUserTwitchWebhooks
         if ($subscribeStatus['status'] === 'webhook_callback_verification_pending') {
             return true;
         }
-
-        dd($subscribeStatus);
 
         return false;
     }
