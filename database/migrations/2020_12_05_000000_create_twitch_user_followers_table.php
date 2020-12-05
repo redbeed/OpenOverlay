@@ -23,7 +23,7 @@ class CreateTwitchUserFollowersTable extends Migration
             $table->timestamp('followed_at')->nullable();
             $table->timestamps();
 
-            $table->unique('twitch_user_id', 'follower_user_id');
+            $table->unique(['twitch_user_id', 'follower_user_id']);
         });
     }
 
