@@ -17,8 +17,4 @@ class UserSubscriber extends Model
         'tier', 'tier_name',
         'is_gift'
     ];
-
-    protected $casts = [
-        'subscribed_at' => 'datetime',
-    ];
 }
