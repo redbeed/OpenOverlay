@@ -6,6 +6,7 @@ All notable changes to `OpenOverlay` will be documented in this file.
 ### Added
 - Users Client
    - Get Followers
+   - Get Subscriber
 - Rewrite ApiClient
 - Add Fake Event command
 
