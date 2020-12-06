@@ -12,9 +12,6 @@ class ApiClient
     /** @var Client */
     protected $httpClient;
 
-    /** @var ApiClient */
-    private static $shared;
-
     /** @var array */
     protected $options = [];
 
@@ -33,21 +30,34 @@ class ApiClient
         ]);
     }
 
-    public static function http(): ApiClient
+    /**
+     * @return ApiClient
+     */
+    public static function http()
     {
-        return new self();
+        return new static();
     }
 
-    public static function withAppToken(string $appToken): self
+    /**
+     * @param  string  $appToken
+     *
+     * @return static
+     */
+    public static function withAppToken(string $appToken)
     {
-        return (new self())->setOptions([
+        return (new static())->setOptions([
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer '.$appToken,
             ],
         ]);
     }
 
-    public function withOptions(array $options): self
+    /**
+     * @param  array  $options
+     *
+     * @return static
+     */
+    public function withOptions(array $options)
     {
         $self = clone $this;
         $self->options = array_merge_recursive($this->options, $options);
@@ -55,6 +65,11 @@ class ApiClient
         return $self;
     }
 
+    /**
+     * @param  array  $options
+     *
+     * @return static
+     */
     public function setOptions(array $options): self
     {
         $self = clone $this;
@@ -63,9 +78,16 @@ class ApiClient
         return $self;
     }
 
-    public function request(string $method, string $url): array
+    /**
+     * @param  string  $method
+     * @param  string  $url
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function request(string $method, string $url)
     {
-        $response = ApiClient::http()->request($method, $url, $this->options);
+        $response = $this->httpClient->request($method, $url, $this->options);
         $json = (string) $response->getBody();
 
         return json_decode($json, true);

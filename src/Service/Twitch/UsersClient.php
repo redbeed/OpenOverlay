@@ -3,47 +3,50 @@
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
-use Redbeed\OpenOverlay\Exceptions\WebhookCallbackMissing;
-use Redbeed\OpenOverlay\Exceptions\WebhookSecretMissing;
 
-class UsersClient
+class UsersClient extends ApiClient
 {
-    /** @var array */
-    protected $headers = [];
-
-    public static function withAppToken(string $appToken): self
+    public function followers(string $userId): array
     {
-        $self = new UsersClient();
-
-        $self->headers([
-            'Authorization' => 'Bearer '.$appToken,
-        ]);
-
-        return $self;
+        return $this
+            ->withOptions([
+                RequestOptions::QUERY => [
+                    'to_id' => $userId,
+                ],
+            ])
+            ->request('GET', 'users/follows');
     }
 
-    public function headers($headers = []): self
+    public function allFollowers(string $userId): array
     {
-        $this->headers = array_merge($this->headers, $headers);
+        $firstResponse = $this
+            ->withOptions([
+                RequestOptions::QUERY => [
+                    'first' => 100,
+                ],
+            ])->followers($userId);
 
-        return $this;
-    }
+        $totalFollowers = $firstResponse['total'];
+        $followers = $firstResponse['data'];
+        $paginationCursor = $firstResponse['pagination']['cursor'] ?? null;
 
-    protected function buildHeader($headers = []): array
-    {
-        return array_merge($this->headers, $headers);
-    }
+        while ($totalFollowers > count($followers) || $paginationCursor !== null) {
+            $response = $this
+                ->withOptions([
+                    RequestOptions::QUERY => [
+                        'first' => 1,
+                        'after' => $paginationCursor,
+                    ],
+                ])
+                ->followers($userId);
 
-    public function get(): array
-    {
+            $paginationCursor = $response['pagination']['cursor'] ?? null;
+            $followers = array_push($followers, ...$response['data'] ?? []);
+        }
 
+        $firstResponse['data'] = $followers;
+        $firstResponse['pagination'] = [];
 
-        $response = ApiClient::http()->post(
-            'users',
-            []
-        );
-
-        return json_decode((string) $response->getBody(), true);
+        return $firstResponse;
     }
 }

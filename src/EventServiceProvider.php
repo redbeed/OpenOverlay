@@ -4,6 +4,7 @@ namespace Redbeed\OpenOverlay;
 
 use \Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
+use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
 use Redbeed\OpenOverlay\Listeners\UpdateUserWebhookCalls;
 use Redbeed\OpenOverlay\Sociallite\TwitchClientCredentialsExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -13,14 +14,23 @@ class EventServiceProvider extends ServiceProvider
 {
 
     protected $listen = [
-        UserConnectionChanged::class => [
-            UpdateUserWebhookCalls::class,
-        ],
-
         SocialiteWasCalled::class => [
             TwitchExtendSocialite::class,
             TwitchClientCredentialsExtendSocialite::class,
         ],
     ];
 
+    public function listens(): array
+    {
+        $listen = $this->listen;
+        $listen[UserConnectionChanged::class] = [
+            UpdateUserWebhookCalls::class,
+        ];
+
+        if (config('openoverlay.service.twitch.save.follower', false) === true) {
+            $listen[UserConnectionChanged::class][] = UpdateTwitchUserFollowers::class;
+        }
+
+        return $listen;
+    }
 }
