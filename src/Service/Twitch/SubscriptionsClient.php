@@ -4,33 +4,32 @@ namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\RequestOptions;
 
-class UsersClient extends ApiClient
+class SubscriptionsClient extends ApiClient
 {
-    public function followers(string $twitchUserId): array
+    public function list(string $twitchUserId): array
     {
         return $this
             ->withOptions([
                 RequestOptions::QUERY => [
-                    'to_id' => $twitchUserId,
+                    'broadcaster_id' => $twitchUserId,
                 ],
             ])
-            ->request('GET', 'users/follows');
+            ->request('GET', 'subscriptions');
     }
 
-    public function allFollowers(string $twitchUserId): array
+    public function all(string $twitchUserId): array
     {
         $firstResponse = $this
             ->withOptions([
                 RequestOptions::QUERY => [
                     'first' => 100,
                 ],
-            ])->followers($twitchUserId);
+            ])->list($twitchUserId);
 
-        $totalFollowers = $firstResponse['total'];
-        $followers = $firstResponse['data'];
+        $subscribers = $firstResponse['data'];
         $paginationCursor = $firstResponse['pagination']['cursor'] ?? null;
 
-        while ($totalFollowers > count($followers) || $paginationCursor !== null) {
+        while ($paginationCursor !== null) {
             $response = $this
                 ->withOptions([
                     RequestOptions::QUERY => [
@@ -38,13 +37,13 @@ class UsersClient extends ApiClient
                         'after' => $paginationCursor,
                     ],
                 ])
-                ->followers($twitchUserId);
+                ->list($twitchUserId);
 
             $paginationCursor = $response['pagination']['cursor'] ?? null;
-            $followers = array_merge($followers, $response['data'] ?? []); // @todo: replace array_merge because its slow
+            $subscribers = array_merge($subscribers, $response['data'] ?? []); // @todo: replace array_merge because its slow
         }
 
-        $firstResponse['data'] = $followers;
+        $firstResponse['data'] = $subscribers;
         $firstResponse['pagination'] = [];
 
         return $firstResponse;

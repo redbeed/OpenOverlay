@@ -22,6 +22,7 @@ return [
              */
             'save' => [
                 'follower' => true,
+                'subscriber' => true,
             ],
         ],
     ],
