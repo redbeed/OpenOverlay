@@ -2,6 +2,12 @@
 
 All notable changes to `OpenOverlay` will be documented in this file.
 
+## Version 0.2.1
+### Added
+- EventSub Listener
+    - Add follower
+    - Add subscriber
+
 ## Version 0.2
 ### Added
 - Users Client
