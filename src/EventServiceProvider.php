@@ -6,6 +6,7 @@ use \Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProv
 use Redbeed\OpenOverlay\Events\TwitchEventReceived;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserFollower;
+use Redbeed\OpenOverlay\Listeners\AddTwitchUserSubscriber;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserSubscriber;
 use Redbeed\OpenOverlay\Listeners\UpdateUserWebhookCalls;
@@ -37,6 +38,7 @@ class EventServiceProvider extends ServiceProvider
 
         if (config('openoverlay.service.twitch.save.subscriber', false) === true) {
             $listen[UserConnectionChanged::class][] = UpdateTwitchUserSubscriber::class;
+            $listen[TwitchEventReceived::class][] = AddTwitchUserSubscriber::class;
         }
 
         return $listen;
