@@ -1,6 +1,6 @@
 {
     "name": "redbeed/openoverlay",
-    "description": "Receive events from Twitch-EventSub Api with Laravel.",
+    "description": "Your self hosted service for twitch web-based overlays and custom bot with Laravel.",
     "license": "MIT",
     "authors": [
         {
@@ -10,7 +10,7 @@
         }
     ],
     "homepage": "https://github.com/redbeed/openoverlay",
-    "keywords": ["Laravel", "OpenOverlay", "twitch", "Eventsub"],
+    "keywords": ["Laravel", "OpenOverlay", "twitch", "Eventsub", "Bot", "IRC"],
     "require": {
         "illuminate/support": "~7|~8",
         "guzzlehttp/guzzle": "^7.2",

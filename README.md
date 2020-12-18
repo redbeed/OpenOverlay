@@ -3,7 +3,9 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Receive events from Twitch-EventSub Api with Laravel.
+OpenOverlay is your self hosted service for web-based Overlays and Custom Bot.
+You receive events from Twitch-EventSub Api with Laravel.
+Also, you are able to deploy your own bot.
 
 ## Installation
 
