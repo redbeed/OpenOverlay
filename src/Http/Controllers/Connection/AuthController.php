@@ -11,6 +11,11 @@ use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 class AuthController extends SocialiteController
 {
 
+    protected function callbackUrl(): string
+    {
+        return route('open_overlay.connection.callback');
+    }
+
     public function handleProviderCallback()
     {
         $socialiteUser = $this->socialite()->user();

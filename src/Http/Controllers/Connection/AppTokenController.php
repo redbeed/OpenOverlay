@@ -6,7 +6,6 @@ use Redbeed\OpenOverlay\Http\Controllers\Connection\SocialiteController;
 
 class AppTokenController extends SocialiteController
 {
-    protected $socialiteDriver = 'twitch_client_credentials';
 
     public function __construct()
     {
@@ -15,6 +14,11 @@ class AppTokenController extends SocialiteController
         if ($generateAllowed !== true) {
             abort(404);
         }
+    }
+
+    protected function callbackUrl(): string
+    {
+        return route('open_overlay.connection.app-token.callback');
     }
 
     public function handleProviderCallback()
