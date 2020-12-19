@@ -3,10 +3,12 @@
 namespace Redbeed\OpenOverlay;
 
 use \Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
 use Redbeed\OpenOverlay\Events\TwitchEventReceived;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserFollower;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserSubscriber;
+use Redbeed\OpenOverlay\Listeners\UpdateTwitchBotToken;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserSubscriber;
 use Redbeed\OpenOverlay\Listeners\UpdateUserWebhookCalls;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
             TwitchExtendSocialite::class,
             TwitchClientCredentialsExtendSocialite::class,
         ],
+        TwitchBotTokenExpires::class => [
+            UpdateTwitchBotToken::class
+        ]
     ];
 
     public function listens(): array

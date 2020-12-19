@@ -6,6 +6,7 @@ namespace Redbeed\OpenOverlay\Console\Commands;
 use Illuminate\Console\Command;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
+use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
 use Redbeed\OpenOverlay\Models\BotConnection;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use function Ratchet\Client\connect;
@@ -29,26 +30,37 @@ class ChatBotCommand extends Command
 
     public function handle(): void
     {
-        $bots = BotConnection::all();
+        /** @var BotConnection $bot */
+        $bot = BotConnection::first();
 
-        connect('wss://irc-ws.chat.twitch.tv:443')->then(function (WebSocket $conn) use ($bots) {
+        connect('wss://irc-ws.chat.twitch.tv:443')->then(function (WebSocket $conn) use ($bot) {
             $connectionHandler = new ConnectionHandler($conn);
 
-            foreach ($bots as $bot) {
-                $connectionHandler->auth($bot->service_token, $bot->bot_username);
+            $connectionHandler->auth($bot->service_token, $bot->bot_username);
 
-                foreach ($bot->users as $user) {
-                    $twitchUsers = $user->connections()->where('service', 'twitch')->get();
+            foreach ($bot->users as $user) {
+                $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
-                    foreach ($twitchUsers as $twitchUser) {
-                        $connectionHandler->joinChannel($twitchUser->service_username);
-                        $connectionHandler->sendChatMessage($twitchUser->service_username, 'Hello');
-                    }
+                foreach ($twitchUsers as $twitchUser) {
+                    $connectionHandler->joinChannel($twitchUser->service_username);
+                    $connectionHandler->sendChatMessage($twitchUser->service_username, 'Hello');
                 }
             }
 
+
             $conn->on('close', function ($code = null, $reason = null) {
                 echo "Connection closed ({$code} - {$reason})";
+            });
+
+            $conn->on('message', function ($message) use ($bot) {
+
+                // check if auth failed
+                if (strpos($message, ':tmi.twitch.tv NOTICE * :Login authentication failed') !== false) {
+                    event(new TwitchBotTokenExpires($bot));
+
+                    return;
+                }
+
             });
 
         }, function ($e) {
