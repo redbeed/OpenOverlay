@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Redbeed\OpenOverlay\Http\Controllers\Api\Connection\WebhookController;
 use Redbeed\OpenOverlay\Http\Controllers\Connection\AppTokenController;
 use Redbeed\OpenOverlay\Http\Controllers\Connection\AuthController;
+use Redbeed\OpenOverlay\Http\Controllers\Connection\BotAuthController;
 
 Route::name('open_overlay.')->group(function () {
 
@@ -26,6 +27,16 @@ Route::name('open_overlay.')->group(function () {
 
                 Route::get('/callback')->uses([AppTokenController::class, 'handleProviderCallback'])
                     ->name('connection.app-token.callback');
+
+            });
+
+            // prefix: /connection/bot
+            Route::prefix('bot')->group(function () {
+                Route::get('/redirect')->uses([BotAuthController::class, 'redirect'])
+                    ->name('connection.bot.redirect');
+
+                Route::get('/callback')->uses([BotAuthController::class, 'handleProviderCallback'])
+                    ->name('connection.bot.callback');
 
             });
         });

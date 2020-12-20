@@ -3,7 +3,9 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Receive events from Twitch-EventSub Api with Laravel.
+OpenOverlay is your self hosted service for web-based Overlays and Custom Bot.
+You receive events from Twitch-EventSub Api with Laravel.
+Also, you are able to deploy your own bot.
 
 ## Installation
 
@@ -35,11 +37,6 @@ Add configuration to `config/services.php`
   'client_secret' => env('TWITCH_CLIENT_SECRET'),  
   'redirect' => env('TWITCH_REDIRECT_URI') 
 ],
-'twitch_client_credentials' => [    
-  'client_id' => env('TWITCH_CLIENT_ID'),  
-  'client_secret' => env('TWITCH_CLIENT_SECRET'),  
-  'redirect' => env('TWITCH_APP_TOKEN_REDIRECT_URI') 
-],
 ```
 _Thanks to [SocialiteProviders/Twitch][link-socialite]_
 
@@ -48,8 +45,6 @@ Add ENV Keys
 ``` bash
 TWITCH_CLIENT_ID=
 TWITCH_CLIENT_SECRET=
-TWITCH_REDIRECT_URI=${APP_URL}/connection/callback
-TWITCH_APP_TOKEN_REDIRECT_URI=${APP_URL}/connection/app-token/callback
 
 OVERLAY_SECRET=
 OVERLAY_TWITCH_APP_TOKEN=
@@ -76,6 +71,7 @@ Add Callback URLs to your Twitch App
 ``` bash
 ${APP_URL}/connection/callback
 ${APP_URL}/connection/app-token/callback
+${APP_URL}/connection/bot/callback
 ```
 
 ### Generate APP Token
