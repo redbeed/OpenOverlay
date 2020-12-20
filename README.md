@@ -75,7 +75,7 @@ ${APP_URL}/connection/bot/callback
 ```
 
 ### Generate APP Token
-To subscribe the Twitch-EventSub you need to generate an App-Token. 
+To subscribe the Twitch-EventSub you need to generate an App-Token.
 
 1. First you need to enable the "app token routes" in the `openoverlay.php` config.
     ``` php
@@ -90,12 +90,22 @@ To subscribe the Twitch-EventSub you need to generate an App-Token.
         ]
         ...
     ```
-    
-    Set `regenerate` to `true`.
+
+   Set `regenerate` to `true`.
 
 2. Open `${APP_URL}/connection/app-token/redirect` with your laravel-app.
 3. Login into your Twitch-Developer account with your Twitch Application.
 4. Copy the App-Token and use it as value for your  `OVERLAY_TWITCH_APP_TOKEN` ENV value.
+
+### Add Bot 
+To add a bot you need to link your app with the bot twitch account.
+
+1. Open `${APP_URL}/connection/bot/redirect` with your laravel-app.
+2. Login into your Twitch-Bot account with your Twitch Application.
+3. After redirect you need to manually connect your laravel-Account with a bot.
+4. Open Your Database table "bot_connections" and connect your bot with your user.
+5. Restart the Bot Artisan Bot
+
 
 ## Generate Secret
 To validate each Twitch call you need to generate a secret for your app.
