@@ -20,6 +20,7 @@ class AddTwitchUserSubscriber implements ShouldQueue
         UserSubscriber::firstOrCreate([
             'twitch_user_id' => $event->event->event_user_id,
             'subscriber_user_id' => $subscriberData['user_id'],
+        ], [
             'subscriber_username' => $subscriberData['user_name'],
             'tier' => $subscriberData['user_name'],
             'tier_name' => $subscriberData['plan_name'],
