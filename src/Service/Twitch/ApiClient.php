@@ -4,6 +4,7 @@ namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Redbeed\OpenOverlay\Exceptions\AppTokenMissing;
 
 class ApiClient
 {
@@ -25,7 +26,7 @@ class ApiClient
             RequestOptions::HEADERS => [
                 'Client-ID' => $clientId,
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$authCode,
+                'Authorization' => 'Bearer ' . $authCode,
             ],
         ]);
     }
@@ -39,7 +40,26 @@ class ApiClient
     }
 
     /**
-     * @param  string  $appToken
+     * @return static
+     * @throws AppTokenMissing
+     */
+    public function addAppToken()
+    {
+        $appToken = config('openoverlay.webhook.twitch.app_token.token');
+
+        if (empty($appToken)) {
+            throw new AppTokenMissing('App Token is needed');
+        }
+
+        return $this->withOptions([
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer ' . $appToken,
+            ],
+        ]);
+    }
+
+    /**
+     * @param string $appToken
      *
      * @return static
      */
@@ -47,13 +67,13 @@ class ApiClient
     {
         return (new static())->setOptions([
             RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer '.$appToken,
+                'Authorization' => 'Bearer ' . $appToken,
             ],
         ]);
     }
 
     /**
-     * @param  array  $options
+     * @param array $options
      *
      * @return static
      */
@@ -66,7 +86,7 @@ class ApiClient
     }
 
     /**
-     * @param  array  $options
+     * @param array $options
      *
      * @return static
      */
@@ -79,8 +99,8 @@ class ApiClient
     }
 
     /**
-     * @param  string  $method
-     * @param  string  $url
+     * @param string $method
+     * @param string $url
      *
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -88,7 +108,7 @@ class ApiClient
     public function request(string $method, string $url)
     {
         $response = $this->httpClient->request($method, $url, $this->options);
-        $json = (string) $response->getBody();
+        $json = (string)$response->getBody();
 
         return json_decode($json, true);
     }
