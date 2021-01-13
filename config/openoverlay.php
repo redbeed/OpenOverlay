@@ -61,7 +61,7 @@ return [
         'commands' => [
 
             'simple' => [
-                '!hello' => 'Hello %username%! How you doing?',
+                '!hello' => 'Hello %username%! How are you doing?',
             ],
 
             'advanced' => [
