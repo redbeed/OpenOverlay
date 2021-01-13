@@ -41,6 +41,8 @@ class ChatBotCommand extends Command
             foreach ($bot->users as $user) {
                 $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
+                $connectionHandler->initCustomCommands();
+
                 foreach ($twitchUsers as $twitchUser) {
                     $connectionHandler->joinChannel($twitchUser->service_username);
                     $connectionHandler->sendChatMessage($twitchUser->service_username, 'Hello');

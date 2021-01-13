@@ -7,6 +7,8 @@ namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Ratchet\Client\WebSocket;
+use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
+use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
 use Redbeed\OpenOverlay\Events\TwitchChatMessageReceived;
 
 class ConnectionHandler
@@ -14,6 +16,9 @@ class ConnectionHandler
 
     /** @var WebSocket */
     private $connection;
+
+    /** @var BotCommand[] */
+    private $customCommands = [];
 
 
     public function __construct(WebSocket $connection)
@@ -48,13 +53,13 @@ class ConnectionHandler
             return;
         }
 
-        echo "UNKOWN | ".$message."\r\n\r\n";
+        echo "UNKOWN | " . $message . "\r\n\r\n";
     }
 
     public function pingReceived(string $message): void
     {
         $this->send('PONG :tmi.twitch.tv');
-        echo "PING PONG done"."\r\n";
+        echo "PING PONG done" . "\r\n";
     }
 
     public function joinMessageReceived(string $message): void
@@ -62,10 +67,10 @@ class ConnectionHandler
         try {
             preg_match("/:(.*)\!.*#(.*)/", $message, $matches);
 
-            echo "BOT (".$matches[1].") joined ".$matches[2]."\r\n";
+            echo "BOT (" . $matches[1] . ") joined " . $matches[2] . "\r\n";
         } catch (\Exception $exception) {
-            echo "ORIGINAL: ".$message;
-            echo $exception->getMessage().' '.$exception->getLine();
+            echo "ORIGINAL: " . $message;
+            echo $exception->getMessage() . ' ' . $exception->getLine();
         }
     }
 
@@ -77,19 +82,32 @@ class ConnectionHandler
             return;
         }
 
-        echo $model->channel.' | '.$model->username.': '.$model->message."\r\n";
+        echo $model->channel . ' | ' . $model->username . ': ' . $model->message . "\r\n";
+
+        try {
+            // Check commands
+            foreach ($this->customCommands as $commandHandler) {
+                $commandHandler->handle($model);
+            }
+        }catch (\Exception $exception) {
+            echo $exception->getMessage()."\r\n";
+            echo $exception->getFile()."\r\n";
+            echo $exception->getLine()."\r\n";
+        }
+
+        echo $model->channel . ' | ' . $model->username . ': ' . $model->message . " HANDELD\r\n";
 
         try {
             event(new TwitchChatMessageReceived($model));
         } catch (\Exception $exception) {
-            echo "  -> EVENT ERROR: ".$exception->getMessage();
+            echo "  -> EVENT ERROR: " . $exception->getMessage();
         }
     }
 
     public function auth(string $authToken, string $appUserName)
     {
-        $this->send('PASS oauth:'.$authToken);
-        $this->send('NICK '.strtolower($appUserName));
+        $this->send('PASS oauth:' . $authToken);
+        $this->send('NICK ' . strtolower($appUserName));
     }
 
     public function send(string $message): void
@@ -99,12 +117,29 @@ class ConnectionHandler
 
     public function joinChannel(string $channelName): void
     {
-        $this->send('JOIN #'.strtolower($channelName));
+        $this->send('JOIN #' . strtolower($channelName));
     }
 
     public function sendChatMessage(string $channelName, string $message): void
     {
-        $this->send('PRIVMSG #'.strtolower($channelName).' :'.$message);
+        echo 'PRIVMSG #' . strtolower($channelName) . ' :' . $message."\n\r";
+
+        $this->send('PRIVMSG #' . strtolower($channelName) . ' :' . $message."\n\r");
+    }
+
+    public function initCustomCommands(): void
+    {
+        /** @var BotCommand[] $commandClasses */
+        $commandClasses = config('openoverlay.bot.commands.advanced');
+
+        // add simple command handler
+        $commandClasses[] = SimpleBotCommands::class;
+
+        var_dump($commandClasses);
+
+        foreach ($commandClasses as $commandClass) {
+            $this->customCommands[] = new $commandClass($this);
+        }
     }
 
 }

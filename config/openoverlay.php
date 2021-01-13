@@ -56,4 +56,17 @@ return [
             ],
         ],
     ],
+
+    'bot' => [
+        'commands' => [
+
+            'simple' => [
+                '!hello' => 'Hello %username%! How are you doing?',
+            ],
+
+            'advanced' => [
+                //\Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class
+            ]
+        ]
+    ]
 ];

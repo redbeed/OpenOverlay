@@ -4,9 +4,7 @@ namespace Redbeed\OpenOverlay\Http\Controllers\Api\Connection;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Redbeed\OpenOverlay\Events\TwitchEventReceived;
-use Redbeed\OpenOverlay\Exceptions\WebhookTwitchSignatureMissing;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
 use Symfony\Component\HttpFoundation\Response;

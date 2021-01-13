@@ -3,7 +3,6 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
-
 class ChatMessage
 {
     /** @var string */
@@ -29,7 +28,6 @@ class ChatMessage
 
             return new ChatMessage($matches[2], $matches[1], $matches[3]);
         } catch (\Exception $exception) {
-            echo "ORIGINAL: ".$message;
             echo $exception->getMessage();
         }
 
