@@ -6,6 +6,30 @@ use GuzzleHttp\RequestOptions;
 
 class UsersClient extends ApiClient
 {
+    public function byId(string $id): array
+    {
+        return $this
+            ->addAppToken()
+            ->withOptions([
+                RequestOptions::QUERY => [
+                    'id' => $id,
+                ],
+            ])
+            ->request('GET', 'users');
+    }
+
+    public function byUsername(string $username): array
+    {
+        return $this
+            ->addAppToken()
+            ->withOptions([
+                RequestOptions::QUERY => [
+                    'login' => $username,
+                ],
+            ])
+            ->request('GET', 'users');
+    }
+
     public function followers(string $twitchUserId): array
     {
         return $this
