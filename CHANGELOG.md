@@ -2,11 +2,18 @@
 
 All notable changes to `OpenOverlay` will be documented in this file.
 
+## Version 0.4
+### Added
+- Bot Commands
+    - Simple command (by config)
+    - Advanced command
+- Channel Client
+
 ## Version 0.3
 ### Added
 - Basic Bot
     - Auth URLs
-    - Endless runtime 
+    - Endless runtime
     - Forward messages to laravel event (also Broadcast)
 
 ## Version 0.2.1
