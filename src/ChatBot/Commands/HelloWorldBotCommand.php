@@ -7,7 +7,7 @@ use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
 
 class HelloWorldBotCommand extends BotCommand
 {
-    public $command = '!hello-advance';
+    public $signature = '!hello-advance';
 
     public function response(ChatMessage $chatMessage): string
     {

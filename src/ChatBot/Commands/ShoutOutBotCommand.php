@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace Redbeed\OpenOverlay\ChatBot\Commands;
 
-use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
 
 class ShoutOutBotCommand extends BotCommand

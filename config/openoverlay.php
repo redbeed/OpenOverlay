@@ -65,7 +65,8 @@ return [
             ],
 
             'advanced' => [
-                \Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class
+                \Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class,
+                \Redbeed\OpenOverlay\ChatBot\Commands\ShoutOutBotCommand::class,
             ]
         ]
     ]
