@@ -13,7 +13,7 @@ class ShoutOutBotCommand extends BotCommand
         $username = $this->parameter('username');
 
         return implode(' ', [
-            'Don´t forget to checkout www.twitch.tv/'.$username,
+            'Don´t forget to checkout www.twitch.tv/' . $username,
         ]);
     }
 }

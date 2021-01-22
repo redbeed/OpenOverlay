@@ -15,7 +15,6 @@ class BotCommand
 
     /** @var string */
     public $signature;
-    /** command: !so {username} {username2} */
 
     /** @var string[] */
     public $aliasCommands = [];
@@ -99,8 +98,7 @@ class BotCommand
 
     protected function messageValid(string $message): bool
     {
-        $command = $this->command();
-        if ($this->messageStartsWith($message, $command)) {
+        if ($this->messageStartsWith($message, $this->command())) {
             return true;
         }
 
