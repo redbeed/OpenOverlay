@@ -11,10 +11,10 @@ class BotCommand
     protected $connection;
 
     /** @var string[] */
-    private $parameters;
+    private $parameters = [];
 
     /** @var string */
-    public $signature;
+    public $signature = '';
 
     /** @var string[] */
     public $aliasCommands = [];

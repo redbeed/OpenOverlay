@@ -17,8 +17,8 @@ class ChatMessage
     public function __construct(string $channel, string $username, string $message)
     {
         $this->channel = $channel;
-        $this->username = $username;
-        $this->message = $message;
+        $this->username = trim($username);
+        $this->message = trim($message);
     }
 
     public static function parseIRCMessage(string $message): ?ChatMessage
