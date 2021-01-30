@@ -3,10 +3,12 @@
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Collection;
 use Redbeed\OpenOverlay\Exceptions\AppTokenMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookCallbackMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookSecretMissing;
 use Redbeed\OpenOverlay\Exceptions\WebhookTwitchSignatureMissing;
+use Redbeed\OpenOverlay\Models\Twitch\EventSubscription;
 
 class EventSubClient extends ApiClient
 {
@@ -26,7 +28,7 @@ class EventSubClient extends ApiClient
 
         return (new self())->setOptions([
             RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer '.$appToken,
+                'Authorization' => 'Bearer ' . $appToken,
             ],
         ]);
     }
@@ -36,13 +38,14 @@ class EventSubClient extends ApiClient
         string $messageId,
         string $messageTimestamp,
         string $requestBody
-    ): bool {
+    ): bool
+    {
         if (empty($messageId) || empty($messageSignature) || empty($messageTimestamp) || empty($requestBody)) {
             throw new WebhookTwitchSignatureMissing('Twitch Eventsub Header infomation missing');
         }
 
-        $message = $messageId.$messageTimestamp.$requestBody;
-        $hash = 'sha256='.hash_hmac('sha256', $message, config('openoverlay.webhook.twitch.secret'));
+        $message = $messageId . $messageTimestamp . $requestBody;
+        $hash = 'sha256=' . hash_hmac('sha256', $message, config('openoverlay.webhook.twitch.secret'));
 
         return $hash === $messageSignature;
     }
@@ -67,12 +70,37 @@ class EventSubClient extends ApiClient
                     'condition' => $condition,
                     'transport' => [
                         'method' => 'webhook',
-                        'callback' => $webhookCallback.'?'.time(),
+                        'callback' => $webhookCallback . '?' . time(),
                         'secret' => $secret,
                     ],
                 ],
             ])
             ->request('POST', self::BASE_URL);
+    }
+
+    public function deleteSubByBroadcasterId(string $broadcasterUserId)
+    {
+        $subscriptions = $this
+            ->subscriptions()
+            ->filter(function ($subscription) use ($broadcasterUserId) {
+            /** @var EventSubscription $subscription */
+            if (empty($subscription->condition) && empty($subscription->condition['broadcaster_user_id'])) {
+                return false;
+            }
+
+            if ($subscription->condition['broadcaster_user_id'] !== $broadcasterUserId) {
+                return false;
+            }
+
+            return true;
+        });
+
+        foreach ($subscriptions as $subscription) {
+            /** @var EventSubscription $subscription */
+            $this->deleteSubscription($subscription->id);
+        }
+
+        $this->subscriptions();
     }
 
     public function deleteSubscription(string $id)
@@ -86,8 +114,12 @@ class EventSubClient extends ApiClient
             ->request('DELETE', self::BASE_URL);
     }
 
-    public function listSubscriptions()
+    public function subscriptions(): Collection
     {
-        return $this->request('GET', self::BASE_URL);
+        $subData = $this->request('GET', self::BASE_URL);
+
+        return collect($subData['data'])->map(function ($twitchData) {
+            return EventSubscription::createFromTwitch($twitchData);
+        });
     }
 }

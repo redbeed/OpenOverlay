@@ -4,6 +4,8 @@ namespace Redbeed\OpenOverlay\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Redbeed\OpenOverlay\Models\Twitch\EventSubscription;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
 
 class EventSubListingCommand extends Command
@@ -41,20 +43,25 @@ class EventSubListingCommand extends Command
     public function handle()
     {
         $eventSubClient = EventSubClient::http();
-        $subData = $eventSubClient->listSubscriptions();
+        $subscriptions = $eventSubClient->subscriptions();
 
-        $this->subscriptionsTable($subData['data']);
-        $this->info('Total EventSub subscriptions: '.$subData['total']);
+        $this->subscriptionsTable($subscriptions);
+        $this->info('Total EventSub subscriptions: '.$subscriptions->count());
     }
 
-    protected function subscriptionsTable(array $subscriptions): void
+    protected function subscriptionsTable(Collection $subscriptions): void
     {
-        $subscriptions = array_map(function ($data) {
-            $information = Arr::only($data, ['id', 'status', 'type', 'condition', 'created_at']);
-            $information['condition'] = json_encode($information['condition']);
+        $subscriptions = $subscriptions->map(function ($subscription) {
+            /** @var EventSubscription $subscription */
 
-            return $information;
-        }, $subscriptions);
+            return [
+                'id' => $subscription->id,
+                'status' => $subscription->status,
+                'type' => $subscription->type,
+                'condition' => json_encode($subscription->condition),
+                'created_at' => $subscription->createdAt->toDateTimeLocalString(),
+            ];
+        });
 
         $this->table(
             ['Id', 'Status', 'Type', 'Condition', 'Created at'],

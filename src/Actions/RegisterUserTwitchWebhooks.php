@@ -20,14 +20,22 @@ class RegisterUserTwitchWebhooks
         $this->apiClient = EventSubClient::http();
     }
 
-    public static function registerAll(Connection $connection)
+    public static function registerAll(Connection $connection, bool $clearBeforeRegister = false)
     {
         $webhooks = config('openoverlay.webhook.twitch.subscribe');
         $handler = new self($connection);
 
+        if($clearBeforeRegister === true) {
+            $handler->clearBroadcasterSubscriptions();
+        }
+
         foreach ($webhooks as $webhookName) {
             $handler->register($webhookName);
         }
+    }
+
+    public function clearBroadcasterSubscriptions() {
+        $this->apiClient->deleteSubByBroadcasterId((string) $this->connection->service_user_id);
     }
 
     public function register(string $type): bool

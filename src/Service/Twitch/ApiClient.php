@@ -102,7 +102,7 @@ class ApiClient
      * @param string $method
      * @param string $url
      *
-     * @return mixed
+     * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function request(string $method, string $url)
