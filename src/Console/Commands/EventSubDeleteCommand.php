@@ -3,6 +3,8 @@
 namespace Redbeed\OpenOverlay\Console\Commands;
 
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Collection;
+use Redbeed\OpenOverlay\Models\Twitch\EventSubscription;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
 
 class EventSubDeleteCommand extends EventSubListingCommand
@@ -65,8 +67,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
         }
 
         $eventSubClient = EventSubClient::http();
-        $subData = $eventSubClient->listSubscriptions();
-        $subscriptions = $subData['data'];
+        $subscriptions = $eventSubClient->subscriptions();
 
         if ($this->option('all') === false) {
             $subscriptions = $this->findByStatus($subscriptions);
@@ -75,7 +76,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
             $subscriptions = $this->findByCondition($subscriptions);
         }
 
-        $subscriptionsCount = count($subscriptions);
+        $subscriptionsCount = $subscriptions->count();
 
         if ($subscriptionsCount === 0) {
             $this->error('No matching subscription founded');
@@ -87,7 +88,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
             $this->subscriptionsTable($subscriptions);
         }
 
-        $this->info($subscriptionsCount.' subscriptions matching your options');
+        $this->info($subscriptionsCount . ' subscriptions matching your options');
 
         if ($this->confirm('Do you wish to delete them?')) {
 
@@ -103,7 +104,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
                     $deleted++;
 
                 } catch (RequestException $exception) {
-                    $this->error($subscription['id'].' could not deleted');
+                    $this->error($subscription['id'] . ' could not deleted');
                 }
 
                 $deleteProgress->advance();
@@ -112,11 +113,11 @@ class EventSubDeleteCommand extends EventSubListingCommand
             $deleteProgress->finish();
             $this->newLine(2);
 
-            $this->info('Total EventSub deleted: '.$deleted.'/'.$subscriptionsCount);
+            $this->info('Total EventSub deleted: ' . $deleted . '/' . $subscriptionsCount);
         }
     }
 
-    private function findByCondition(array $subscriptions): array
+    private function findByCondition(Collection $subscriptions): Collection
     {
         $condition = $this->option('condition');
 
@@ -127,12 +128,13 @@ class EventSubDeleteCommand extends EventSubListingCommand
         // clean up
         $condition = json_encode(json_decode($condition, true));
 
-        return array_filter($subscriptions, static function ($subscription) use ($condition) {
-            return json_encode($subscription['condition']) === $condition;
+        return $subscriptions->filter(function ($subscription) use ($condition) {
+            /** @var EventSubscription $subscription */
+            return $subscription->condition === $condition;
         });
     }
 
-    private function findById(array $subscriptions): array
+    private function findById(Collection $subscriptions): Collection
     {
         $subId = $this->option('id');
 
@@ -140,12 +142,13 @@ class EventSubDeleteCommand extends EventSubListingCommand
             return $subscriptions;
         }
 
-        return array_filter($subscriptions, static function ($subscription) use ($subId) {
-            return $subscription['id'] === $subId;
+        return $subscriptions->filter(function ($subscription) use ($subId) {
+            /** @var EventSubscription $subscription */
+            return $subscription->id === $subId;
         });
     }
 
-    private function findByType(array $subscriptions): array
+    private function findByType(Collection $subscriptions): Collection
     {
         $type = $this->option('type');
 
@@ -153,12 +156,13 @@ class EventSubDeleteCommand extends EventSubListingCommand
             return $subscriptions;
         }
 
-        return array_filter($subscriptions, static function ($subscription) use ($type) {
-            return $subscription['type'] === $type;
+        return $subscriptions->filter(function ($subscription) use ($type) {
+            /** @var EventSubscription $subscription */
+            return $subscription->type === $type;
         });
     }
 
-    private function findByStatus(array $subscriptions): array
+    private function findByStatus(Collection $subscriptions): Collection
     {
         $status = $this->option('status');
 
@@ -166,8 +170,9 @@ class EventSubDeleteCommand extends EventSubListingCommand
             return $subscriptions;
         }
 
-        return array_filter($subscriptions, static function ($subscription) use ($status) {
-            return $subscription['status'] === $status;
+        return $subscriptions->filter(function ($subscription) use ($status) {
+            /** @var EventSubscription $subscription */
+            return $subscription->status === $status;
         });
     }
 }

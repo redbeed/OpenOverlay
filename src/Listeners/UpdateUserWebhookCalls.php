@@ -11,6 +11,6 @@ class UpdateUserWebhookCalls implements ShouldQueue
     public function handle(UserConnectionChanged $event)
     {
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
-        RegisterUserTwitchWebhooks::registerAll($twitchConnection);
+        RegisterUserTwitchWebhooks::registerAll($twitchConnection, true);
     }
 }
