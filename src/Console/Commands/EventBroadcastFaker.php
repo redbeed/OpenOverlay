@@ -3,6 +3,8 @@
 namespace Redbeed\OpenOverlay\Console\Commands;
 
 use Carbon\Carbon;
+use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelCheerFake;
+use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelRaidFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelSubscribeFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelUpdateFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\Fake;
@@ -30,6 +32,8 @@ class EventBroadcastFaker extends EventSubListingCommand
         'channel.update' => ChannelUpdateFake::class,
         'channel.follow' => ChannelFollowFake::class,
         'channel.subscribe' => ChannelSubscribeFake::class,
+        'channel.cheer' => ChannelCheerFake::class,
+        'channel.raid' => ChannelRaidFake::class,
     ];
 
     /**
