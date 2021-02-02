@@ -25,7 +25,7 @@ class RegisterUserTwitchWebhooks
         $webhooks = config('openoverlay.webhook.twitch.subscribe');
         $handler = new self($connection);
 
-        if($clearBeforeRegister === true) {
+        if ($clearBeforeRegister === true) {
             $handler->clearBroadcasterSubscriptions();
         }
 
@@ -34,8 +34,9 @@ class RegisterUserTwitchWebhooks
         }
     }
 
-    public function clearBroadcasterSubscriptions() {
-        $this->apiClient->deleteSubByBroadcasterId((string) $this->connection->service_user_id);
+    public function clearBroadcasterSubscriptions()
+    {
+        $this->apiClient->deleteSubByBroadcasterId((string)$this->connection->service_user_id);
     }
 
     public function register(string $type): bool
@@ -43,14 +44,14 @@ class RegisterUserTwitchWebhooks
         $version = '1';
 
         // @todo: remove if channel.raid is not in beta anymore
-        if($type === 'channel.raid'){
+        if ($type === 'channel.raid') {
             $version = 'beta';
         }
 
         $jsonResponse = $this->apiClient->subscribe(
             $type,
             route('open_overlay.connection.webhook'),
-            ['broadcaster_user_id' => (string) $this->connection->service_user_id],
+            $this->registerCondition($type),
             $version
         );
 
@@ -61,5 +62,16 @@ class RegisterUserTwitchWebhooks
         }
 
         return false;
+    }
+
+    private function registerCondition($type): array
+    {
+        $broadcasterId = (string)$this->connection->service_user_id;
+
+        if ($type === 'channel.raid') {
+            return ['to_broadcaster_user_id' => $broadcasterId];
+        }
+
+        return ['broadcaster_user_id' => $broadcasterId];
     }
 }
