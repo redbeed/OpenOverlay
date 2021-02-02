@@ -51,14 +51,14 @@ class WebhookController extends Controller
             ],
             [
                 'event_type' => $eventType,
-                'event_user_id' => $eventData['broadcaster_user_id'] || $eventData['to_broadcaster_user_id'],
+                'event_user_id' => $eventData['broadcaster_user_id'] ?? $eventData['to_broadcaster_user_id'],
                 'event_data' => $eventData,
                 'event_sent' => DateTime::parse($eventTimestamp),
             ]
         );
 
         if ($newEvent->wasRecentlyCreated) {
-            event(new TwitchEventReceived($newEvent));
+            broadcast(new TwitchEventReceived($newEvent));
         }
 
         return \response('Event received', $newEvent->wasRecentlyCreated ? Response::HTTP_CREATED : Response::HTTP_OK);
