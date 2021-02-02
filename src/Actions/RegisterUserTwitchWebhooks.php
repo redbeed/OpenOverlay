@@ -40,10 +40,18 @@ class RegisterUserTwitchWebhooks
 
     public function register(string $type): bool
     {
+        $version = '1';
+
+        // @todo: remove if channel.raid is not in beta anymore
+        if($type === 'channel.raid'){
+            $version = 'beta';
+        }
+
         $jsonResponse = $this->apiClient->subscribe(
             $type,
             route('open_overlay.connection.webhook'),
-            ['broadcaster_user_id' => (string) $this->connection->service_user_id]
+            ['broadcaster_user_id' => (string) $this->connection->service_user_id],
+            $version
         );
 
         $subscribeStatus = Arr::first($jsonResponse['data']);
