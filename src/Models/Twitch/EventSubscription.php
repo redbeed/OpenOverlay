@@ -5,6 +5,7 @@ namespace Redbeed\OpenOverlay\Models\Twitch;
 
 
 use Carbon\Carbon;
+use Redbeed\OpenOverlay\Service\Twitch\DateTime;
 
 class EventSubscription
 {
@@ -39,9 +40,7 @@ class EventSubscription
         $model->version = $twitchData['version'];
         $model->condition = $twitchData['condition'];
         $model->transport = $twitchData['transport'];
-        
-        $timestamp = substr(trim($twitchData['created_at'], 'Z'), 0, 23) . 'Z';
-        $model->createdAt = Carbon::createFromFormat(\DateTime::RFC3339_EXTENDED, $timestamp);
+        $model->createdAt = DateTime::parse($twitchData['created_at']);
 
         return $model;
     }

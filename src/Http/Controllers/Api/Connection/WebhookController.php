@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Redbeed\OpenOverlay\Events\TwitchEventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
+use Redbeed\OpenOverlay\Service\Twitch\DateTime;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,9 +16,12 @@ class WebhookController extends Controller
     {
         $messageSignature = $request->headers->get('Twitch-Eventsub-Message-Signature', '');
         $messageId = $request->headers->get('Twitch-Eventsub-Message-Id', '');
-        $messageTimestamp = $request->headers->get('Twitch-Eventsub-Message-Timestamp', '');
         $messageType = $request->headers->get('Twitch-Eventsub-Subscription-Type', '');
         $requestBody = $request->getContent();
+
+        $messageTimestamp = DateTime::parse(
+            $request->headers->get('Twitch-Eventsub-Message-Timestamp', '')
+        );
 
         if (EventSubClient::verifySignature($messageSignature, $messageId, $messageTimestamp, $requestBody) === false) {
             return response('Not Valid', Response::HTTP_UNAUTHORIZED);
@@ -56,7 +60,7 @@ class WebhookController extends Controller
             ]
         );
 
-        if($newEvent->wasRecentlyCreated) {
+        if ($newEvent->wasRecentlyCreated) {
             event(new TwitchEventReceived($newEvent));
         }
 
