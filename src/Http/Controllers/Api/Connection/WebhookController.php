@@ -16,12 +16,9 @@ class WebhookController extends Controller
     {
         $messageSignature = $request->headers->get('Twitch-Eventsub-Message-Signature', '');
         $messageId = $request->headers->get('Twitch-Eventsub-Message-Id', '');
+        $messageTimestamp = $request->headers->get('Twitch-Eventsub-Message-Timestamp', '');
         $messageType = $request->headers->get('Twitch-Eventsub-Subscription-Type', '');
         $requestBody = $request->getContent();
-
-        $messageTimestamp = DateTime::parse(
-            $request->headers->get('Twitch-Eventsub-Message-Timestamp', '')
-        );
 
         if (EventSubClient::verifySignature($messageSignature, $messageId, $messageTimestamp, $requestBody) === false) {
             return response('Not Valid', Response::HTTP_UNAUTHORIZED);
@@ -54,9 +51,9 @@ class WebhookController extends Controller
             ],
             [
                 'event_type' => $eventType,
-                'event_user_id' => $eventData['broadcaster_user_id'],
+                'event_user_id' => $eventData['broadcaster_user_id'] || $eventData['to_broadcaster_user_id'],
                 'event_data' => $eventData,
-                'event_sent' => $eventTimestamp,
+                'event_sent' => DateTime::parse($eventTimestamp),
             ]
         );
 
