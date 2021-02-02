@@ -38,8 +38,10 @@ class EventSubscription
         $model->type = $twitchData['type'];
         $model->version = $twitchData['version'];
         $model->condition = $twitchData['condition'];
-        $model->createdAt = Carbon::parse($twitchData['created_at']);
         $model->transport = $twitchData['transport'];
+        
+        $timestamp = substr(trim($twitchData['created_at'], 'Z'), 0, 23) . 'Z';
+        $model->createdAt = Carbon::createFromFormat(\DateTime::RFC3339_EXTENDED, $timestamp);
 
         return $model;
     }

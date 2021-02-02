@@ -50,7 +50,7 @@ class EventSubClient extends ApiClient
         return $hash === $messageSignature;
     }
 
-    public function subscribe(string $type, string $webhookCallback, array $condition = []): array
+    public function subscribe(string $type, string $webhookCallback, array $condition = [], string $version = '1') : array
     {
         $secret = config('openoverlay.webhook.twitch.secret');
 
@@ -66,7 +66,7 @@ class EventSubClient extends ApiClient
             ->withOptions([
                 RequestOptions::JSON => [
                     'type' => $type,
-                    'version' => '1',
+                    'version' => $version,
                     'condition' => $condition,
                     'transport' => [
                         'method' => 'webhook',
