@@ -50,7 +50,7 @@ class EventSubClient extends ApiClient
         return $hash === $messageSignature;
     }
 
-    public function subscribe(string $type, string $webhookCallback, array $condition = [], string $version = '1') : array
+    public function subscribe(string $type, string $webhookCallback, array $condition = [], string $version = '1'): array
     {
         $secret = config('openoverlay.webhook.twitch.secret');
 
@@ -83,17 +83,22 @@ class EventSubClient extends ApiClient
         $subscriptions = $this
             ->subscriptions()
             ->filter(function ($subscription) use ($broadcasterUserId) {
-            /** @var EventSubscription $subscription */
-            if (empty($subscription->condition) && empty($subscription->condition['broadcaster_user_id'])) {
-                return false;
-            }
+                /** @var EventSubscription $subscription */
 
-            if ($subscription->condition['broadcaster_user_id'] !== $broadcasterUserId) {
-                return false;
-            }
+                if (empty($subscription->condition)) {
+                    return false;
+                }
 
-            return true;
-        });
+                if (!empty($subscription->condition['broadcaster_user_id']) && $subscription->condition['broadcaster_user_id'] !== $broadcasterUserId) {
+                    return false;
+                }
+
+                if (!empty($subscription->condition['to_broadcaster_user_id']) && $subscription->condition['to_broadcaster_user_id'] !== $broadcasterUserId) {
+                    return false;
+                }
+
+                return true;
+            });
 
         foreach ($subscriptions as $subscription) {
             /** @var EventSubscription $subscription */
