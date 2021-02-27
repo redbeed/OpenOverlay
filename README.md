@@ -3,10 +3,11 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-OpenOverlay is your self hosted service for web-based Overlays and Custom Bot.
-You receive events from Twitch-EventSub Api with Laravel.
-Also, you are able to deploy your own bot.
+OpenOverlay is a self-hosted service for your web-based twitch overlays and bot.
+This Laravel package helps you to receive all twitch events actions while you streaming and show them on your overlay.
+Also, you can develop your own bot with simple and advanced commands.
 
+If you want to start from scratch with your overlay we have an example project.
 Standalone-Version: _[redbeed/OpenOverlay-Standalone][link-standalone]_
 
 ## Installation
