@@ -5,7 +5,6 @@ namespace Redbeed\OpenOverlay\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
-use Redbeed\OpenOverlay\OpenOverlay;
 
 class BotConnection extends Model
 {
@@ -53,6 +52,6 @@ class BotConnection extends Model
 
     public function users()
     {
-        return $this->belongsToMany(config('auth.providers.users.model'), 'users_bots_enabled', 'bot_id');
+        return $this->belongsToMany(config('auth.providers.users.model'), 'users_bots_enabled', 'bot_id', 'user_id');
     }
 }
