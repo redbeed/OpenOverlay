@@ -20,6 +20,15 @@ class ConnectionHandler
     /** @var BotCommand[] */
     private $customCommands = [];
 
+    /** @var string[] */
+    private $joinedChannel = [];
+
+    /** @var array[] */
+    private $channelQueue = [];
+
+    /** @var mixed[] */
+    private $joinedCallBack = [];
+
 
     public function __construct(WebSocket $connection)
     {
@@ -68,10 +77,24 @@ class ConnectionHandler
             preg_match("/:(.*)\!.*#(.*)/", $message, $matches);
 
             echo "BOT (" . $matches[1] . ") joined " . $matches[2] . "\r\n";
+            $channelName = trim(strtolower($matches[2]));
+
+            $this->joinedChannel[] = $channelName;
+            $this->runChannelQueue($channelName);
+
+            if (isset($this->joinedCallBack[$channelName])) {
+                $this->joinedCallBack[$channelName]();
+            }
+
         } catch (\Exception $exception) {
-            echo "ORIGINAL: " . $message;
-            echo $exception->getMessage() . ' ' . $exception->getLine();
+            echo $exception->getMessage() . ' ' . $exception->getLine() . "\r\n";
         }
+    }
+
+    public function addJoinedCallBack(string $channelName, callable $callback): void
+    {
+        $channelName = strtolower($channelName);
+        $this->joinedCallBack[$channelName] = $callback;
     }
 
     public function chatMessageReceived(string $message): void
@@ -89,10 +112,10 @@ class ConnectionHandler
             foreach ($this->customCommands as $commandHandler) {
                 $commandHandler->handle($model);
             }
-        }catch (\Exception $exception) {
-            echo $exception->getMessage()."\r\n";
-            echo $exception->getFile()."\r\n";
-            echo $exception->getLine()."\r\n";
+        } catch (\Exception $exception) {
+            echo $exception->getMessage() . "\r\n";
+            echo $exception->getFile() . "\r\n";
+            echo $exception->getLine() . "\r\n";
         }
 
         echo $model->channel . ' | ' . $model->username . ': ' . $model->message . " HANDELD\r\n";
@@ -115,16 +138,42 @@ class ConnectionHandler
         $this->connection->send($message);
     }
 
+
     public function joinChannel(string $channelName): void
     {
+        $channelName = strtolower($channelName);
+
+        $this->channelQueue[$channelName] = [];
         $this->send('JOIN #' . strtolower($channelName));
+    }
+
+    private function runChannelQueue(string $channelName): void
+    {
+        $channelName = trim(strtolower($channelName));
+
+        if (!empty($this->channelQueue[$channelName])) {
+            foreach ($this->channelQueue[$channelName] as $item) {
+                $this->send($item);
+            }
+        }
+
+        $this->channelQueue[$channelName] = [];
     }
 
     public function sendChatMessage(string $channelName, string $message): void
     {
-        echo 'PRIVMSG #' . strtolower($channelName) . ' :' . $message."\n\r";
+        $lowerChannelName = strtolower($channelName);
+        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\n\r";
 
-        $this->send('PRIVMSG #' . strtolower($channelName) . ' :' . $message."\n\r");
+        // send message after channel joined
+        if (!in_array($lowerChannelName, $this->joinedChannel)) {
+            $this->channelQueue[$lowerChannelName][] = $message;
+
+            return;
+        }
+
+        $this->send($message);
+        echo $message;
     }
 
     public function initCustomCommands(): void
@@ -134,8 +183,6 @@ class ConnectionHandler
 
         // add simple command handler
         $commandClasses[] = SimpleBotCommands::class;
-
-        var_dump($commandClasses);
 
         foreach ($commandClasses as $commandClass) {
             $this->customCommands[] = new $commandClass($this);

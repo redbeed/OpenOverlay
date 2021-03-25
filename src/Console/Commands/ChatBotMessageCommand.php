@@ -58,9 +58,11 @@ class ChatBotMessageCommand extends Command
             foreach ($twitchUsers as $twitchUser) {
                 $connectionHandler->joinChannel($twitchUser->service_username);
                 $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
-            }
 
-            $conn->close();
+                $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () use ($conn) {
+                    $conn->close();
+                });
+            }
 
         }, function ($e) {
             echo "Could not connect: {$e->getMessage()}\n";
