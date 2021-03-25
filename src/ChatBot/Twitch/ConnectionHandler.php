@@ -12,6 +12,8 @@ use Redbeed\OpenOverlay\Models\BotConnection;
 
 class ConnectionHandler
 {
+    const TWITCH_IRC_URL = 'wss://irc-ws.chat.twitch.tv:443';
+
     /** @var WebSocket */
     private $connection;
 

@@ -13,6 +13,6 @@ class MadeWithChatBotScheduling extends ChatBotScheduling
 
     protected function schedule(Event $event): Event
     {
-        return $event->everyFifteenMinutes();
+        return $event->hourly();
     }
 }

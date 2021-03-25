@@ -20,7 +20,7 @@ class SecretCommand extends EventSubListingCommand
      *
      * @var string
      */
-    protected $description = 'Generate new secret for twitch safer communication';
+    protected $description = 'Generate new secret for safer twitch communication';
 
 
     public function handle(): void

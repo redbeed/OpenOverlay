@@ -24,7 +24,7 @@ class ChatBotMessageCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate new secret for twitch safer communication';
+    protected $description = 'Send Chatbot messages';
 
 
     public function handle(): void
@@ -49,7 +49,7 @@ class ChatBotMessageCommand extends Command
             return;
         }
 
-        connect('wss://irc-ws.chat.twitch.tv:443')->then(function (WebSocket $conn) use ($bot, $user, $message) {
+        connect(ConnectionHandler::TWITCH_IRC_URL)->then(function (WebSocket $conn) use ($bot, $user, $message) {
             $connectionHandler = new ConnectionHandler($conn);
 
             $connectionHandler->auth($bot);
