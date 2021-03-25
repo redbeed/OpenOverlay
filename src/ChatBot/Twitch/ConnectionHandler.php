@@ -3,19 +3,20 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
-
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
 use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
+use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
 use Redbeed\OpenOverlay\Events\TwitchChatMessageReceived;
+use Redbeed\OpenOverlay\Models\BotConnection;
 
 class ConnectionHandler
 {
-
     /** @var WebSocket */
     private $connection;
+
+    /** @var BotConnection */
+    private $bot;
 
     /** @var BotCommand[] */
     private $customCommands = [];
@@ -41,6 +42,16 @@ class ConnectionHandler
 
     public function messageReceived(string $message): void
     {
+
+        // get join message
+        if (strpos($message, 'NOTICE * :Login authentication failed') !== false) {
+            echo "LOGIN | " . $message . "\r\n\r\n";
+            event(new TwitchBotTokenExpires($this->bot));
+
+            $this->connection->close();
+            return;
+        }
+
         // get join message
         if (strpos($message, 'PING') !== false) {
             $this->pingReceived($message);
@@ -127,10 +138,12 @@ class ConnectionHandler
         }
     }
 
-    public function auth(string $authToken, string $appUserName)
+    public function auth(BotConnection $bot)
     {
-        $this->send('PASS oauth:' . $authToken);
-        $this->send('NICK ' . strtolower($appUserName));
+        $this->bot = $bot;
+
+        $this->send('PASS oauth:' . $this->bot->service_token);
+        $this->send('NICK ' . strtolower($this->bot->bot_username));
     }
 
     public function send(string $message): void

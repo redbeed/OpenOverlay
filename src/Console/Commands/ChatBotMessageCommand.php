@@ -52,7 +52,7 @@ class ChatBotMessageCommand extends Command
         connect('wss://irc-ws.chat.twitch.tv:443')->then(function (WebSocket $conn) use ($bot, $user, $message) {
             $connectionHandler = new ConnectionHandler($conn);
 
-            $connectionHandler->auth($bot->service_token, $bot->bot_username);
+            $connectionHandler->auth($bot);
             $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
             foreach ($twitchUsers as $twitchUser) {
