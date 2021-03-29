@@ -68,6 +68,10 @@ return [
                 \Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class,
                 \Redbeed\OpenOverlay\ChatBot\Commands\ShoutOutBotCommand::class,
             ]
+        ],
+
+        'schedules' => [
+            \Redbeed\OpenOverlay\Console\Scheduling\MadeWithChatBotScheduling::class,
         ]
     ]
 ];
