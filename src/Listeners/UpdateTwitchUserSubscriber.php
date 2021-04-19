@@ -20,15 +20,34 @@ class UpdateTwitchUserSubscriber implements ShouldQueue
         foreach ($subscriberList['data'] as $subscriberData) {
             $subscriberIds[] = $subscriberData['user_id'];
 
-            UserSubscriber::firstOrCreate([
-                'twitch_user_id' => $twitchConnection->service_user_id,
-                'subscriber_user_id' => $subscriberData['user_id'],
-            ], [
-                'subscriber_username' => $subscriberData['user_name'],
-                'tier' => $subscriberData['user_name'],
-                'tier_name' => $subscriberData['plan_name'],
-                'is_gift' => $subscriberData['is_gift']
-            ]);
+            $subscriberModal = UserSubscriber::withTrashed()
+                ->where('twitch_user_id', $twitchConnection->service_user_id)
+                ->where('subscriber_user_id', $subscriberData['user_id'])
+                ->first();
+
+            if ($subscriberModal === null) {
+                UserSubscriber::create([
+                    'twitch_user_id' => $twitchConnection->service_user_id,
+                    'subscriber_user_id' => $subscriberData['user_id'],
+                    'subscriber_username' => $subscriberData['user_name'],
+                    'tier' => $subscriberData['tier'],
+                    'tier_name' => $subscriberData['plan_name'],
+                    'is_gift' => $subscriberData['is_gift']
+                ]);
+
+                continue;
+            }
+
+            $subscriberModal->subscriber_username = $subscriberData['user_name'];
+            $subscriberModal->tier = $subscriberData['tier'];
+            $subscriberModal->tier_name = $subscriberData['plan_name'];
+            $subscriberModal->is_gift = $subscriberData['is_gift'];
+
+            if ($subscriberModal->trashed()) {
+                $subscriberModal->restore();
+            }
+
+            $subscriberModal->save();
         }
 
         UserSubscriber::whereNotIn('subscriber_user_id', $subscriberIds)

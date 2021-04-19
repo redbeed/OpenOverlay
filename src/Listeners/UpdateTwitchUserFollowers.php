@@ -22,14 +22,31 @@ class UpdateTwitchUserFollowers implements ShouldQueue
         foreach ($followerList['data'] as $followerData) {
             $followerIds[] = $followerData['from_id'];
 
-            UserFollowers::firstOrCreate([
-                'twitch_user_id' => $twitchConnection->service_user_id,
-                'follower_user_id' => $followerData['from_id'],
-            ], [
-                'follower_username' => $followerData['from_name'],
-                'followed_at' => Carbon::parse($followerData['followed_at']),
-                'deleted_at' => null,
-            ]);
+            $followerModal = UserFollowers::withTrashed()
+                ->where('twitch_user_id', $twitchConnection->service_user_id)
+                ->where('follower_user_id', $followerData['from_id'])
+                ->first();
+
+            if($followerModal === null) {
+                UserFollowers::create([
+                    'twitch_user_id' => $twitchConnection->service_user_id,
+                    'follower_user_id' => $followerData['from_id'],
+                    'follower_username' => $followerData['from_name'],
+                    'followed_at' => Carbon::parse($followerData['followed_at']),
+                    'deleted_at' => null,
+                ]);
+
+                continue;
+            }
+
+            $followerModal->follower_username = $followerData['from_name'];
+            $followerModal->followed_at = Carbon::parse($followerData['followed_at']);
+
+            if ($followerModal->trashed()) {
+                $followerModal->restore();
+            }
+
+            $followerModal->save();
         }
 
         UserFollowers::whereNotIn('follower_user_id', $followerIds)
