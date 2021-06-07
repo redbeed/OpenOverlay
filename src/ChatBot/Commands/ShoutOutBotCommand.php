@@ -13,7 +13,7 @@ class ShoutOutBotCommand extends BotCommand
 
     public function response(ChatMessage $chatMessage): string
     {
-        $username = $this->parameter('username');
+        $username = ltrim($this->parameter('username'), '@');
 
         $usersClient = new UsersClient();
         try {
