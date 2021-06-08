@@ -70,16 +70,13 @@ class OpenOverlayServiceProvider extends ServiceProvider
             __DIR__ . '/../config/openoverlay.php' => config_path('openoverlay.php'),
         ], 'openoverlay.config');
 
-        $this->app->booted(function () {
-            $this->registerSchedule();
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $this->registerSchedule($schedule);
         });
     }
 
-    private function registerSchedule(): void
+    private function registerSchedule(Schedule $schedule): void
     {
-        /** @var Schedule $schedule */
-        $schedule = $this->app->make(Schedule::class);
-
         /** @var ChatBotScheduling[] $scheduledMessages */
         $scheduledMessages = config('openoverlay.bot.schedules', []);
 
