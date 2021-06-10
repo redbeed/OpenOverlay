@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Console\Scheduling\Event;
+use Redbeed\OpenOverlay\Console\Scheduling\ChatBotScheduling;
+
+class {{ class }} extends ChatBotScheduling
+{
+    protected function message(): string
+    {
+        return "Hi I'm a Bot MrDestructoid, made with https://openOverlay.dev";
+    }
+
+    protected function schedule(Event $event): Event
+    {
+        return $event->hourly();
+    }
+}
+
+

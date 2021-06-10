@@ -9,6 +9,7 @@ use Redbeed\OpenOverlay\Console\Commands\EventBroadcastFaker;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
 use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotCommandCommand;
+use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotSchedulingCommand;
 use Redbeed\OpenOverlay\Console\Commands\SecretCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
@@ -32,6 +33,7 @@ class ConsoleServiceProvider extends ServiceProvider
             ChatBotMessageCommand::class,
 
             MakeBotCommandCommand::class,
+            MakeBotSchedulingCommand::class,
         ]);
     }
 }
