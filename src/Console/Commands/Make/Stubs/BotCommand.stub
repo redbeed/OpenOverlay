@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ namespace }};
+
+use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
+use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
+
+class {{ class }} extends BotCommand
+{
+    public $signature = '!{{ command }}';
+
+    public $aliasCommands = [];
+
+    public function response(ChatMessage $chatMessage): string
+    {
+        return 'The command "{{ command }}" works';
+    }
+}
