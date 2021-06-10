@@ -2,42 +2,80 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands;
 
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Str;
-use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
 
 class SecretCommand extends EventSubListingCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'overlay:secret';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    private const ENV_KEY = 'OVERLAY_SECRET';
+
+    protected $signature = 'overlay:secret
+                    {--show : Show the Secret that will be set}
+                    {--force : Force replacing secret key}';
+
     protected $description = 'Generate new secret for safer twitch communication';
-
 
     public function handle(): void
     {
-        $currentSecret = env('OVERLAY_SECRET');
-        if (empty($currentSecret) === false) {
+        $currentSecret = env(self::ENV_KEY);
+
+        if (!empty($currentSecret) && !$this->option('force')) {
             $this->warn('You already have a secret');
-            $this->newLine(2);
+            return;
         }
 
-        $newSecret = Str::random(20);
+        $secretKey = $this->generateSecretKey();
 
-        $this->info('You need secret: '.$newSecret);
+        $this->showOption($secretKey);
+        $this->writeSecretKeyInEnvironmentFile($secretKey);
+    }
 
-        $this->newLine();
+    private function generateSecretKey(): string
+    {
+        return Str::random(20);
+    }
 
-        $this->line('Please add this into your .env file');
-        $this->line('OVERLAY_SECRET="'.$newSecret.'"');
+    private function writeSecretKeyInEnvironmentFile($key): void
+    {
+        $envFilePath = $this->laravel->environmentFilePath();
+        $envFileContent = file_get_contents($envFilePath);
+        $secretKeyPattern = $this->keyReplacementPattern();
+
+        if (preg_match($secretKeyPattern, $envFileContent) === 0) {
+            file_put_contents(
+                $envFilePath,
+                self::ENV_KEY . '=' . $key . PHP_EOL,
+                FILE_APPEND
+            );
+
+            $this->info('New Secret Key added');
+
+            return;
+        }
+
+        file_put_contents(
+            $envFilePath,
+            preg_replace(
+                $secretKeyPattern,
+                self::ENV_KEY . '=' . $key,
+                $envFileContent
+            )
+        );
+
+        $this->info('New Secret Key replaced');
+    }
+
+    private function showOption(string $key): void
+    {
+        if ($this->option('show')) {
+            $this->info('New Secret Key:');
+            $this->info(self::ENV_KEY . '=' . $key);
+        }
+    }
+
+    protected function keyReplacementPattern(): string
+    {
+        $escaped = preg_quote('=' . env(self::ENV_KEY, ''), '/');
+        return "/^" . self::ENV_KEY . "{$escaped}/m";
     }
 }
