@@ -42,11 +42,10 @@ class ChatBotCommand extends Command
                 $connectionHandler->initCustomCommands();
 
                 foreach ($twitchUsers as $twitchUser) {
-                    $connectionHandler->joinChannel($twitchUser->service_username);
+                    $connectionHandler->joinChannel($twitchUser);
                     $connectionHandler->sendChatMessage($twitchUser->service_username, 'Hello');
                 }
             }
-
 
             $conn->on('close', function ($code = null, $reason = null) {
                 echo "Connection closed ({$code} - {$reason})";

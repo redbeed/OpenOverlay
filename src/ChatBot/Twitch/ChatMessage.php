@@ -1,7 +1,8 @@
 <?php
 
-
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
+
+use Redbeed\OpenOverlay\Models\Twitch\Emote;
 
 class ChatMessage
 {
@@ -14,6 +15,9 @@ class ChatMessage
     /** @var string */
     public $message;
 
+    /** @var Emote[] */
+    public $possibleEmotes;
+
     public function __construct(string $channel, string $username, string $message)
     {
         $this->channel = $channel;
@@ -21,7 +25,7 @@ class ChatMessage
         $this->message = trim($message);
     }
 
-    public static function parseIRCMessage(string $message): ?ChatMessage
+    public static function parseIRCMessage(string $message, $emotes = []): ?ChatMessage
     {
         try {
             preg_match("/:(.*)\!.*#(.*) :(.*)/", $message, $matches);
@@ -32,5 +36,32 @@ class ChatMessage
         }
 
         return null;
+    }
+
+    public function toHtml(string $emoteSize = Emote::IMAGE_SIZE_MD): string
+    {
+        $emoteList = collect($this->possibleEmotes)
+            ->map(function (Emote $emote) use ($emoteSize) {
+                $name = htmlspecialchars_decode($emote->name);
+                $regex = '/' . str_replace('\\\\', '\\\\\\', $name) . '/';
+
+                if (@preg_match($regex, null) === false) {
+                    echo "Emote Regex '" . $regex . "' is invalid \n\r";
+                    return null;
+                }
+
+                return [
+                    'name' => $regex,
+                    'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . $emote->name . '">',
+                ];
+            });
+
+        dump($emoteList->pluck('name')->toArray());
+
+        return preg_replace(
+            $emoteList->pluck('name')->filter()->toArray(),
+            $emoteList->pluck('image')->filter()->toArray(),
+            $this->message
+        );
     }
 }

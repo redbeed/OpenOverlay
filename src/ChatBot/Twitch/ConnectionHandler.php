@@ -9,6 +9,9 @@ use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
 use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
 use Redbeed\OpenOverlay\Events\TwitchChatMessageReceived;
 use Redbeed\OpenOverlay\Models\BotConnection;
+use Redbeed\OpenOverlay\Models\Twitch\Emote;
+use Redbeed\OpenOverlay\Models\User\Connection;
+use Redbeed\OpenOverlay\Service\Twitch\ChatEmotesClient;
 
 class ConnectionHandler
 {
@@ -31,6 +34,9 @@ class ConnectionHandler
 
     /** @var mixed[] */
     private $joinedCallBack = [];
+
+    /** @var array */
+    private $emoteSets = [];
 
 
     public function __construct(WebSocket $connection)
@@ -113,6 +119,13 @@ class ConnectionHandler
     public function chatMessageReceived(string $message): void
     {
         $model = ChatMessage::parseIRCMessage($message);
+        $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
+
+        try {
+            dump($model->toHtml(Emote::IMAGE_SIZE_LG));
+        }catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
 
         if ($model === null) {
             return;
@@ -154,12 +167,25 @@ class ConnectionHandler
     }
 
 
-    public function joinChannel(string $channelName): void
+    public function joinChannel(Connection $channel): void
     {
-        $channelName = strtolower($channelName);
+        $channelName = strtolower($channel->service_username);
 
         $this->channelQueue[$channelName] = [];
+        $this->loadEmotes($channel);
+
         $this->send('JOIN #' . strtolower($channelName));
+    }
+
+    private function loadEmotes(Connection $channel)
+    {
+        $emoteClient = new ChatEmotesClient();
+        $channelName = strtolower($channel->service_username);
+
+        $this->emoteSets[$channelName] = collect($emoteClient->get($channel->service_user_id))
+            ->merge($emoteClient->global())
+            ->merge($emoteClient->allSets())
+            ->toArray();
     }
 
     private function runChannelQueue(string $channelName): void
