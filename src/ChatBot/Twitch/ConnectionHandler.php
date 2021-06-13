@@ -118,7 +118,6 @@ class ConnectionHandler
 
     public function chatMessageReceived(string $message): void
     {
-        dump($message);
         $model = ChatMessage::parseIRCMessage($message);
 
         if ($model === null) {
@@ -126,12 +125,6 @@ class ConnectionHandler
         }
 
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
-
-        try {
-            dump($model->toHtml(Emote::IMAGE_SIZE_LG));
-        }catch (\Exception $exception) {
-            dump($exception->getMessage());
-        }
 
         echo $model->channel . ' | ' . $model->username . ': ' . $model->message . "\r\n";
 

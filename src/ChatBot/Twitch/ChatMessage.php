@@ -25,7 +25,7 @@ class ChatMessage
         $this->message = trim($message);
     }
 
-    public static function parseIRCMessage(string $message, $emotes = []): ?ChatMessage
+    public static function parseIRCMessage(string $message): ?ChatMessage
     {
         try {
             preg_match("/:(.*)\!.*#(\S+) :(.*)/", $message, $matches);
