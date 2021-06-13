@@ -12,6 +12,16 @@ class BotAuthController extends SocialiteController
         return route('open_overlay.connection.bot.callback');
     }
 
+    protected function scopes(): array
+    {
+        // Add bot mandatory scopes
+        return collect(parent::scopes())
+            ->add('chat:edit')
+            ->add('chat:read')
+            ->unique()
+            ->toArray();
+    }
+
     public function handleProviderCallback()
     {
         $botUser = $this->socialite()->user();
