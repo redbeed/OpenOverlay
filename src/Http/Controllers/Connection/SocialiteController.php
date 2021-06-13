@@ -15,7 +15,11 @@ abstract class SocialiteController
     protected function socialite(): Provider
     {
         return Socialite::driver($this->socialiteDriver)
-            ->setScopes(config('openoverlay.service.twitch.scopes'));
+            ->setScopes($this->scopes());
+    }
+
+    protected function scopes(): array {
+        return config('openoverlay.service.twitch.scopes');
     }
 
     public function redirect(): RedirectResponse
