@@ -118,17 +118,19 @@ class ConnectionHandler
 
     public function chatMessageReceived(string $message): void
     {
+        dump($message);
         $model = ChatMessage::parseIRCMessage($message);
+
+        if ($model === null) {
+            return;
+        }
+
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
 
         try {
             dump($model->toHtml(Emote::IMAGE_SIZE_LG));
         }catch (\Exception $exception) {
             dump($exception->getMessage());
-        }
-
-        if ($model === null) {
-            return;
         }
 
         echo $model->channel . ' | ' . $model->username . ': ' . $model->message . "\r\n";
@@ -149,7 +151,7 @@ class ConnectionHandler
         try {
             event(new TwitchChatMessageReceived($model));
         } catch (\Exception $exception) {
-            echo "  -> EVENT ERROR: " . $exception->getMessage();
+            echo "  -> EVENT ERROR: " . $exception->getMessage()."\r\n";
         }
     }
 
@@ -204,7 +206,7 @@ class ConnectionHandler
     public function sendChatMessage(string $channelName, string $message): void
     {
         $lowerChannelName = strtolower($channelName);
-        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\n\r";
+        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\r\n";
 
         // send message after channel joined
         if (!in_array($lowerChannelName, $this->joinedChannel)) {

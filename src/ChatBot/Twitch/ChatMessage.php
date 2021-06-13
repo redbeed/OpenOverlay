@@ -28,11 +28,11 @@ class ChatMessage
     public static function parseIRCMessage(string $message, $emotes = []): ?ChatMessage
     {
         try {
-            preg_match("/:(.*)\!.*#(.*) :(.*)/", $message, $matches);
+            preg_match("/:(.*)\!.*#(\S+) :(.*)/", $message, $matches);
 
             return new ChatMessage($matches[2], $matches[1], $matches[3]);
         } catch (\Exception $exception) {
-            echo $exception->getMessage();
+            echo $exception->getMessage()."\r\n";
         }
 
         return null;
@@ -46,7 +46,7 @@ class ChatMessage
                 $regex = '/' . str_replace('\\\\', '\\\\\\', $name) . '/';
 
                 if (@preg_match($regex, null) === false) {
-                    echo "Emote Regex '" . $regex . "' is invalid \n\r";
+                    echo "Emote Regex '" . $regex . "' is invalid \r\n";
                     return null;
                 }
 
@@ -55,8 +55,6 @@ class ChatMessage
                     'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . $emote->name . '">',
                 ];
             });
-
-        dump($emoteList->pluck('name')->toArray());
 
         return preg_replace(
             $emoteList->pluck('name')->filter()->toArray(),
