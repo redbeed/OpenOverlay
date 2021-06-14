@@ -20,7 +20,9 @@ class UpdateTwitchUserSubscriber implements ShouldQueue
             return;
         }
 
-        $subscriberList = SubscriptionsClient::withAppToken($twitchConnection->service_token)
+        $subscriptionsClient = new SubscriptionsClient();
+        $subscriberList = $subscriptionsClient
+            ->withAppToken($twitchConnection->service_token)
             ->all($twitchConnection->service_user_id);
 
         $subscriberIds = [];

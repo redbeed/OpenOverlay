@@ -9,6 +9,9 @@ use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
 use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
 use Redbeed\OpenOverlay\Events\TwitchChatMessageReceived;
 use Redbeed\OpenOverlay\Models\BotConnection;
+use Redbeed\OpenOverlay\Models\Twitch\Emote;
+use Redbeed\OpenOverlay\Models\User\Connection;
+use Redbeed\OpenOverlay\Service\Twitch\ChatEmotesClient;
 
 class ConnectionHandler
 {
@@ -31,6 +34,9 @@ class ConnectionHandler
 
     /** @var mixed[] */
     private $joinedCallBack = [];
+
+    /** @var array */
+    private $emoteSets = [];
 
 
     public function __construct(WebSocket $connection)
@@ -118,6 +124,8 @@ class ConnectionHandler
             return;
         }
 
+        $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
+
         echo $model->channel . ' | ' . $model->username . ': ' . $model->message . "\r\n";
 
         try {
@@ -136,7 +144,7 @@ class ConnectionHandler
         try {
             event(new TwitchChatMessageReceived($model));
         } catch (\Exception $exception) {
-            echo "  -> EVENT ERROR: " . $exception->getMessage();
+            echo "  -> EVENT ERROR: " . $exception->getMessage()."\r\n";
         }
     }
 
@@ -154,12 +162,25 @@ class ConnectionHandler
     }
 
 
-    public function joinChannel(string $channelName): void
+    public function joinChannel(Connection $channel): void
     {
-        $channelName = strtolower($channelName);
+        $channelName = strtolower($channel->service_username);
 
         $this->channelQueue[$channelName] = [];
+        $this->loadEmotes($channel);
+
         $this->send('JOIN #' . strtolower($channelName));
+    }
+
+    private function loadEmotes(Connection $channel)
+    {
+        $emoteClient = new ChatEmotesClient();
+        $channelName = strtolower($channel->service_username);
+
+        $this->emoteSets[$channelName] = collect($emoteClient->get($channel->service_user_id))
+            ->merge($emoteClient->global())
+            ->merge($emoteClient->allSets())
+            ->toArray();
     }
 
     private function runChannelQueue(string $channelName): void
@@ -178,7 +199,7 @@ class ConnectionHandler
     public function sendChatMessage(string $channelName, string $message): void
     {
         $lowerChannelName = strtolower($channelName);
-        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\n\r";
+        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\r\n";
 
         // send message after channel joined
         if (!in_array($lowerChannelName, $this->joinedChannel)) {

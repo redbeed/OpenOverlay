@@ -63,9 +63,9 @@ class ApiClient
      *
      * @return static
      */
-    public static function withAppToken(string $appToken)
+    public function withAppToken(string $appToken)
     {
-        return (new static())->setOptions([
+        return $this->setOptions([
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer ' . $appToken,
             ],

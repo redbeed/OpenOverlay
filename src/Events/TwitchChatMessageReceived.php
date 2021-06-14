@@ -8,6 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
+use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
 
 class TwitchChatMessageReceived implements ShouldBroadcastNow
@@ -25,11 +26,6 @@ class TwitchChatMessageReceived implements ShouldBroadcastNow
         $this->twitchUser = Connection::where('service_username', $this->message->channel)->first();
     }
 
-//    public function broadcastWhen()
-//    {
-//        return $this->twitchUser !== null;
-//    }
-
     public function broadcastOn(): Channel
     {
         return new Channel('twitch.'.$this->twitchUser->service_user_id);
@@ -45,6 +41,7 @@ class TwitchChatMessageReceived implements ShouldBroadcastNow
         return [
             'username' => $this->message->username,
             'message' => $this->message->message,
+            'message_html' => $this->message->toHtml(Emote::IMAGE_SIZE_MD),
             'channel' => $this->message->channel,
         ];
     }

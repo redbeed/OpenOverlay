@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
 use Redbeed\OpenOverlay\Models\BotConnection;
+use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Models\User\UserOpenOverlay;
 use Redbeed\OpenOverlay\OpenOverlay;
 use function Ratchet\Client\connect;
@@ -53,10 +54,12 @@ class ChatBotMessageCommand extends Command
             $connectionHandler = new ConnectionHandler($conn);
 
             $connectionHandler->auth($bot);
+
+            /** @var Connection[] $twitchUsers */
             $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
             foreach ($twitchUsers as $twitchUser) {
-                $connectionHandler->joinChannel($twitchUser->service_username);
+                $connectionHandler->joinChannel($twitchUser);
                 $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
 
                 $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () use ($conn) {
