@@ -2,6 +2,7 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
+use Illuminate\Support\Str;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 
 class ChatMessage
@@ -32,7 +33,7 @@ class ChatMessage
 
             return new ChatMessage($matches[2], $matches[1], $matches[3]);
         } catch (\Exception $exception) {
-            echo $exception->getMessage()."\r\n";
+            echo $exception->getMessage() . "\r\n";
         }
 
         return null;
@@ -43,7 +44,7 @@ class ChatMessage
         $emoteList = collect($this->possibleEmotes)
             ->map(function (Emote $emote) use ($emoteSize) {
                 $name = htmlspecialchars_decode($emote->name);
-                $regex = '/' . str_replace('\\\\', '\\\\\\', $name) . '/';
+                $regex = '/' . str_replace('\\\\', '\\', $name) . '(\s|$)/';
 
                 if (@preg_match($regex, null) === false) {
                     echo "Emote Regex '" . $regex . "' is invalid \r\n";
@@ -52,7 +53,7 @@ class ChatMessage
 
                 return [
                     'name' => $regex,
-                    'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . $emote->name . '">',
+                    'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . Str::slug($emote->name) . '"> ',
                 ];
             });
 
