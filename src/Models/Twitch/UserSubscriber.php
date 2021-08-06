@@ -14,8 +14,8 @@ class UserSubscriber extends Model
 
     protected $fillable = [
         'twitch_user_id',
-        'subscriber_user_id', 'subscriber_username',
+        'subscriber_user_id', 'subscriber_username', 'subscriber_login_name',
         'tier', 'tier_name',
-        'is_gift'
+        'is_gift', 'gifter_user_id', 'gifter_username', 'gifter_login_name'
     ];
 }
