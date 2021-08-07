@@ -27,7 +27,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Redbeed\\OpenOverlay\\": "src/"
+            "Redbeed\\OpenOverlay\\": "src/",
+            "Redbeed\\OpenOverlay\\Database\\": "database/"
         }
     },
     "autoload-dev": {

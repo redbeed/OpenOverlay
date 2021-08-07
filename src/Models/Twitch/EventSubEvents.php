@@ -4,6 +4,7 @@ namespace Redbeed\OpenOverlay\Models\Twitch;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Redbeed\OpenOverlay\Database\Factories\EventSubEventsFactory;
 
 class EventSubEvents extends Model
 {
@@ -21,4 +22,9 @@ class EventSubEvents extends Model
         'event_sent' => 'datetime',
         'event_data' => 'array',
     ];
+
+    protected static function newFactory()
+    {
+        return EventSubEventsFactory::new();
+    }
 }

@@ -8,6 +8,7 @@ use Redbeed\OpenOverlay\Events\TwitchEventReceived;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserFollower;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserSubscriber;
+use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchBotToken;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserSubscriber;
@@ -31,7 +32,9 @@ class EventServiceProvider extends ServiceProvider
 
     public function listens(): array
     {
+        $this->autoShoutOutListener();
         $listen = $this->listen;
+
         $listen[UserConnectionChanged::class] = [
             UpdateUserWebhookCalls::class,
         ];
@@ -47,5 +50,15 @@ class EventServiceProvider extends ServiceProvider
         }
 
         return $listen;
+    }
+
+    public function autoShoutOutListener()
+    {
+        $modules = config('openoverlay.modules', []);
+        if (empty($modules[AutoShoutOutRaid::class]) || empty($modules[AutoShoutOutRaid::class]['message'])) {
+            return;
+        }
+
+        $this->listen[TwitchEventReceived::class][] = AutoShoutOutRaid::class;
     }
 }
