@@ -3,6 +3,7 @@
 namespace Redbeed\OpenOverlay\Console\Commands;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelCheerFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelRaidFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelSubscribeFake;
@@ -65,13 +66,13 @@ class EventBroadcastFaker extends EventSubListingCommand
 
         /** @var Fake $fakeModel */
         $fakeModel = $this->types[$type];
-        $fakeEvent = new EventSubEvents();
-        $fakeEvent->event_type = $type;
-        $fakeEvent->event_user_id = $twitchUserId;
-        $fakeEvent->event_data = $fakeModel::value();
-        $fakeEvent->event_sent = Carbon::now();
+        $fakeEvent = EventSubEvents::factory()->create([
+            'event_user_id' => $twitchUserId,
+            'event_type' => $type,
+            'event_data' => $fakeModel::value(),
+        ]);
 
         broadcast(new TwitchEventReceived($fakeEvent));
-        $this->info('Event '.$type.' for '.$twitchUserId.' fired');
+        $this->info('Event ' . $type . ' for ' . $twitchUserId . ' fired');
     }
 }

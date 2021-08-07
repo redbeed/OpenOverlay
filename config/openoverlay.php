@@ -27,6 +27,16 @@ return [
         ],
     ],
 
+    'modules' => [
+        /**
+         * Auto shout out after a raid.
+         * You can use :username, :twitchUrl and :gameName for your message.
+         */
+        \Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid::class => [
+            'message' => 'Follow :username over at :twitchUrl. They were last playing :gameName'
+        ],
+    ],
+
     'webhook' => [
         'twitch' => [
 

@@ -36,8 +36,8 @@ class ShoutOutBotCommand extends BotCommand
             $channels = $channelClient->get($user['id']);
             $channel = head($channels['data']);
 
-            if(!empty($channel['game_id'])) {
-                $response[] = '- currently playing "'.$channel['game_name'].'"';
+            if (!empty($channel['game_id'])) {
+                $response[] = '- last playing "' . $channel['game_name'] . '"';
             }
         } catch (ClientException $exception) {
             // ignore
