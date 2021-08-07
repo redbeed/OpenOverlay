@@ -3,16 +3,29 @@
 namespace Redbeed\OpenOverlay\Listeners;
 
 use Carbon\Carbon;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Models\Twitch\UserFollowers;
+use Redbeed\OpenOverlay\Service\Twitch\ApiClient;
 use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
+use Symfony\Component\HttpFoundation\Response;
 
 class UpdateTwitchUserFollowers implements ShouldQueue
 {
-    public function handle(UserConnectionChanged $event)
+    public function handle($event)
     {
+        if($event instanceof Login) {
+            $this->handleUserLogin($event);
+            return;
+        }
+
+        $this->refreshFollowers($event);
+    }
+
+    private function refreshFollowers(UserConnectionChanged $event) {
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
 
         $userClient = new UsersClient();
@@ -56,4 +69,18 @@ class UpdateTwitchUserFollowers implements ShouldQueue
             ->delete();
     }
 
+    public function handleUserLogin(Login $loginEvent)
+    {
+        try {
+            $this->handle(new UserConnectionChanged($loginEvent->user, 'twitch'));
+        } catch (ClientException $clientException) {
+            if (!$clientException->hasResponse()) {
+                throw $clientException;
+            }
+
+            if ($clientException->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED) {
+                throw $clientException;
+            }
+        }
+    }
 }

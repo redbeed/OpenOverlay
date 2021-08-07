@@ -2,17 +2,29 @@
 
 namespace Redbeed\OpenOverlay\Listeners;
 
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Models\Twitch\UserSubscriber;
 use Redbeed\OpenOverlay\Service\Twitch\SubscriptionsClient;
 use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
+use Symfony\Component\HttpFoundation\Response;
 
 class UpdateTwitchUserSubscriber implements ShouldQueue
 {
-    public function handle(UserConnectionChanged $event)
+    public function handle($event)
     {
+        if($event instanceof Login) {
+            $this->handleUserLogin($event);
+            return;
+        }
+
+        $this->refreshSubscriber($event);
+    }
+
+    private function refreshSubscriber(UserConnectionChanged $event) {
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
         $twitchUser = $this->twitchUser($twitchConnection->service_user_id);
 
@@ -75,6 +87,21 @@ class UpdateTwitchUserSubscriber implements ShouldQueue
         UserSubscriber::whereNotIn('subscriber_user_id', $subscriberIds)
             ->where('twitch_user_id', $twitchConnection->service_user_id)
             ->delete();
+    }
+
+    public function handleUserLogin(Login $loginEvent)
+    {
+        try {
+            $this->handle(new UserConnectionChanged($loginEvent->user, 'twitch'));
+        } catch (ClientException $clientException) {
+            if (!$clientException->hasResponse()) {
+                throw $clientException;
+            }
+
+            if ($clientException->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED) {
+                throw $clientException;
+            }
+        }
     }
 
     private function twitchUser(string $broadcasterId): array
