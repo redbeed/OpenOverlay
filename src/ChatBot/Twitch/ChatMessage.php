@@ -44,7 +44,7 @@ class ChatMessage
         $emoteList = collect($this->possibleEmotes)
             ->map(function (Emote $emote) use ($emoteSize) {
                 $name = htmlspecialchars_decode($emote->name);
-                $regex = '/' . str_replace('\\\\', '\\', $name) . '(\s|$)/';
+                $regex = '/'.preg_quote($name, '/') . '(\s|$)/';
 
                 if (@preg_match($regex, null) === false) {
                     echo "Emote Regex '" . $regex . "' is invalid \r\n";
