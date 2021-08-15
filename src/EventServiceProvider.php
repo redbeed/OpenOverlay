@@ -9,6 +9,7 @@ use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserFollower;
 use Redbeed\OpenOverlay\Listeners\AddTwitchUserSubscriber;
 use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
+use Redbeed\OpenOverlay\Listeners\TwitchSplitReceivedEvents;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchBotToken;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
 use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserSubscriber;
@@ -38,6 +39,8 @@ class EventServiceProvider extends ServiceProvider
         $listen[UserConnectionChanged::class] = [
             UpdateUserWebhookCalls::class,
         ];
+
+        $listen[TwitchEventReceived::class][] = TwitchSplitReceivedEvents::class;
 
         if (config('openoverlay.service.twitch.save.follower', false) === true) {
             $listen[UserConnectionChanged::class][] = UpdateTwitchUserFollowers::class;
