@@ -28,13 +28,7 @@ class TwitchChatMessageReceived implements ShouldBroadcastNow
         /** @var Connection twitchUser */
         $this->twitchUser = Connection::where('service_username', $this->message->channel)->first();
 
-        try {
-            echo "#1"."\n\n\r";
-            ViewerInChat::add($this->message->username, $this->twitchUser);
-            echo "#2"."\n\n\r";
-        }catch (\Exception $exception) {
-            echo $exception->getMessage();
-        }
+        ViewerInChat::add($this->message->username, $this->twitchUser);
     }
 
     public function broadcastOn(): Channel
