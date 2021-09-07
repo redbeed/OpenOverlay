@@ -17,12 +17,14 @@ class ConsoleServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->registerGlobalCommands();
+
         if ($this->app->runningInConsole()) {
-            $this->registerCommands();
+            $this->registerConsoleCommands();
         }
     }
 
-    protected function registerCommands(): void
+    protected function registerConsoleCommands(): void
     {
         $this->commands([
             EventSubListingCommand::class,
@@ -30,10 +32,16 @@ class ConsoleServiceProvider extends ServiceProvider
             EventBroadcastFaker::class,
             SecretCommand::class,
             ChatBotCommand::class,
-            ChatBotMessageCommand::class,
 
             MakeBotCommandCommand::class,
             MakeBotSchedulingCommand::class,
+        ]);
+    }
+
+    protected function registerGlobalCommands(): void
+    {
+        $this->commands([
+            ChatBotMessageCommand::class,
         ]);
     }
 }
