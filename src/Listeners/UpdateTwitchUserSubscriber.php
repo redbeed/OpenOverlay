@@ -26,6 +26,11 @@ class UpdateTwitchUserSubscriber implements ShouldQueue
 
     private function refreshSubscriber(UserConnectionChanged $event) {
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
+
+        if($twitchConnection === null){
+            return;
+        }
+
         $twitchUser = $this->twitchUser($twitchConnection->service_user_id);
 
         if (empty($twitchUser['broadcaster_type'])) {
