@@ -4,7 +4,7 @@ namespace Redbeed\OpenOverlay\Http\Controllers\Api\Connection;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 use Redbeed\OpenOverlay\Service\Twitch\DateTime;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
@@ -58,7 +58,7 @@ class WebhookController extends Controller
         );
 
         if ($newEvent->wasRecentlyCreated) {
-            broadcast(new TwitchEventReceived($newEvent));
+            broadcast(new EventReceived($newEvent));
         }
 
         return \response('Event received', $newEvent->wasRecentlyCreated ? Response::HTTP_CREATED : Response::HTTP_OK);

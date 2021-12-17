@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Events;
+namespace Redbeed\OpenOverlay\Events\Twitch;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -8,7 +8,7 @@ use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Support\StreamerOnline;
 
-class TwitchStreamOnline implements ShouldBroadcastNow
+class StreamOnline implements ShouldBroadcastNow
 {
     /** @var EventSubEvents */
     private $twitchEvent;
