@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Events;
+namespace Redbeed\OpenOverlay\Events\Twitch;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 
-class TwitchEventReceived implements ShouldBroadcastNow
+class EventReceived implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

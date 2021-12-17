@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Listeners;
+namespace Redbeed\OpenOverlay\Listeners\Twitch;
 
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
@@ -13,7 +13,7 @@ use Redbeed\OpenOverlay\Service\Twitch\ApiClient;
 use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 use Symfony\Component\HttpFoundation\Response;
 
-class UpdateTwitchUserFollowers implements ShouldQueue
+class RefreshUserFollows implements ShouldQueue
 {
     public function handle($event)
     {

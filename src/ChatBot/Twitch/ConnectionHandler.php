@@ -6,8 +6,8 @@ namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
 use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
-use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
-use Redbeed\OpenOverlay\Events\TwitchChatMessageReceived;
+use Redbeed\OpenOverlay\Events\Twitch\BotTokenExpires;
+use Redbeed\OpenOverlay\Events\Twitch\ChatMessageReceived;
 use Redbeed\OpenOverlay\Models\BotConnection;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
@@ -54,7 +54,7 @@ class ConnectionHandler
         // get join message
         if (strpos($message, 'NOTICE * :Login authentication failed') !== false) {
             echo "LOGIN | " . $message . "\r\n\r\n";
-            event(new TwitchBotTokenExpires($this->bot));
+            event(new BotTokenExpires($this->bot));
 
             $this->connection->close();
             return;
@@ -142,7 +142,7 @@ class ConnectionHandler
         echo $model->channel . ' | ' . $model->username . ': ' . $model->message . " HANDELD\r\n";
 
         try {
-            event(new TwitchChatMessageReceived($model));
+            event(new ChatMessageReceived($model));
         } catch (\Exception $exception) {
             echo "  -> EVENT ERROR: " . $exception->getMessage()."\r\n";
         }

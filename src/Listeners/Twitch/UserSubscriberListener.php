@@ -1,15 +1,14 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Listeners;
+namespace Redbeed\OpenOverlay\Listeners\Twitch;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\UserSubscriber;
 
-class AddTwitchUserSubscriber implements ShouldQueue
+class UserSubscriberListener implements ShouldQueue
 {
-
-    public function handle(TwitchEventReceived $event)
+    public function handle(EventReceived $event)
     {
         if ($event->event->event_type !== 'channel.subscribe') {
             return;

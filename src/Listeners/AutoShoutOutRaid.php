@@ -7,13 +7,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Redbeed\OpenOverlay\Console\Commands\ChatBotMessageCommand;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Service\Twitch\ChannelsClient;
 
 class AutoShoutOutRaid implements ShouldQueue
 {
-    public function handle(TwitchEventReceived $event)
+    public function handle(EventReceived $event)
     {
         if ($event->event->event_type !== 'channel.raid') {
             return;

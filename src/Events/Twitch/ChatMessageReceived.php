@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Events;
+namespace Redbeed\OpenOverlay\Events\Twitch;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -12,8 +12,9 @@ use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Support\ViewerInChat;
+use function config;
 
-class TwitchChatMessageReceived implements ShouldBroadcastNow
+class ChatMessageReceived implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

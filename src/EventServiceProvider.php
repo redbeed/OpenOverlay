@@ -3,16 +3,16 @@
 namespace Redbeed\OpenOverlay;
 
 use \Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\BotTokenExpires;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
-use Redbeed\OpenOverlay\Listeners\AddTwitchUserFollower;
-use Redbeed\OpenOverlay\Listeners\AddTwitchUserSubscriber;
+use Redbeed\OpenOverlay\Listeners\Twitch\UserFollowerListener;
+use Redbeed\OpenOverlay\Listeners\Twitch\UserSubscriberListener;
 use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
 use Redbeed\OpenOverlay\Listeners\TwitchSplitReceivedEvents;
-use Redbeed\OpenOverlay\Listeners\UpdateTwitchBotToken;
-use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserFollowers;
-use Redbeed\OpenOverlay\Listeners\UpdateTwitchUserSubscriber;
+use Redbeed\OpenOverlay\Listeners\Twitch\UpdateBotToken;
+use Redbeed\OpenOverlay\Listeners\Twitch\RefreshUserFollows;
+use Redbeed\OpenOverlay\Listeners\Twitch\RefreshUserSubscriptions;
 use Redbeed\OpenOverlay\Listeners\UpdateUserWebhookCalls;
 use Redbeed\OpenOverlay\Sociallite\TwitchClientCredentialsExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -26,8 +26,8 @@ class EventServiceProvider extends ServiceProvider
             TwitchExtendSocialite::class,
             TwitchClientCredentialsExtendSocialite::class,
         ],
-        TwitchBotTokenExpires::class => [
-            UpdateTwitchBotToken::class
+        BotTokenExpires::class => [
+            UpdateBotToken::class
         ]
     ];
 
@@ -40,16 +40,16 @@ class EventServiceProvider extends ServiceProvider
             UpdateUserWebhookCalls::class,
         ];
 
-        $listen[TwitchEventReceived::class][] = TwitchSplitReceivedEvents::class;
+        $listen[EventReceived::class][] = TwitchSplitReceivedEvents::class;
 
         if (config('openoverlay.service.twitch.save.follower', false) === true) {
-            $listen[UserConnectionChanged::class][] = UpdateTwitchUserFollowers::class;
-            $listen[TwitchEventReceived::class][] = AddTwitchUserFollower::class;
+            $listen[UserConnectionChanged::class][] = RefreshUserFollows::class;
+            $listen[EventReceived::class][] = UserFollowerListener::class;
         }
 
         if (config('openoverlay.service.twitch.save.subscriber', false) === true) {
-            $listen[UserConnectionChanged::class][] = UpdateTwitchUserSubscriber::class;
-            $listen[TwitchEventReceived::class][] = AddTwitchUserSubscriber::class;
+            $listen[UserConnectionChanged::class][] = RefreshUserSubscriptions::class;
+            $listen[EventReceived::class][] = UserSubscriberListener::class;
         }
 
         return $listen;
@@ -62,6 +62,6 @@ class EventServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->listen[TwitchEventReceived::class][] = AutoShoutOutRaid::class;
+        $this->listen[EventReceived::class][] = AutoShoutOutRaid::class;
     }
 }

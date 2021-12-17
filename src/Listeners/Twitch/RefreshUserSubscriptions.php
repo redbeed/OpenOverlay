@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Listeners;
+namespace Redbeed\OpenOverlay\Listeners\Twitch;
 
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Auth\Events\Login;
@@ -11,8 +11,9 @@ use Redbeed\OpenOverlay\Models\Twitch\UserSubscriber;
 use Redbeed\OpenOverlay\Service\Twitch\SubscriptionsClient;
 use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 use Symfony\Component\HttpFoundation\Response;
+use function head;
 
-class UpdateTwitchUserSubscriber implements ShouldQueue
+class RefreshUserSubscriptions implements ShouldQueue
 {
     public function handle($event)
     {

@@ -1,16 +1,15 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Listeners;
+namespace Redbeed\OpenOverlay\Listeners\Twitch;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\UserFollowers;
 
-class AddTwitchUserFollower implements ShouldQueue
+class UserFollowerListener implements ShouldQueue
 {
-
-    public function handle(TwitchEventReceived $event)
+    public function handle(EventReceived $event)
     {
         if ($event->event->event_type !== 'channel.follow') {
             return;

@@ -1,13 +1,13 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Events;
+namespace Redbeed\OpenOverlay\Events\Twitch;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Redbeed\OpenOverlay\Models\BotConnection;
 
-class TwitchBotTokenExpires
+class BotTokenExpires
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

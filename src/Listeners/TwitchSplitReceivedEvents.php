@@ -2,21 +2,21 @@
 
 namespace Redbeed\OpenOverlay\Listeners;
 
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
-use Redbeed\OpenOverlay\Events\TwitchStreamOffline;
-use Redbeed\OpenOverlay\Events\TwitchStreamOnline;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\StreamOffline;
+use Redbeed\OpenOverlay\Events\Twitch\StreamOnline;
 
 class TwitchSplitReceivedEvents
 {
-    public function handle(TwitchEventReceived $twitchEvent)
+    public function handle(EventReceived $twitchEvent)
     {
         if ($twitchEvent->event->event_type === 'stream.online') {
-            broadcast(new TwitchStreamOnline($twitchEvent->event));
+            broadcast(new StreamOnline($twitchEvent->event));
             return;
         }
 
         if ($twitchEvent->event->event_type === 'stream.offline') {
-            broadcast(new TwitchStreamOffline($twitchEvent->event));
+            broadcast(new StreamOffline($twitchEvent->event));
             return;
         }
     }

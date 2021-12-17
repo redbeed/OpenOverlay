@@ -12,7 +12,7 @@ use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\Fake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelFollowFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOffline;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOnline;
-use Redbeed\OpenOverlay\Events\TwitchEventReceived;
+use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 
 class EventBroadcastFaker extends EventSubListingCommand
@@ -76,7 +76,7 @@ class EventBroadcastFaker extends EventSubListingCommand
             'event_data' => $fakeModel::value(),
         ]);
 
-        broadcast(new TwitchEventReceived($fakeEvent));
+        broadcast(new EventReceived($fakeEvent));
         $this->info('Event ' . $type . ' for ' . $twitchUserId . ' fired');
     }
 }

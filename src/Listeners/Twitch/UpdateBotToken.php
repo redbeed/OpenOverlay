@@ -1,15 +1,15 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Listeners;
+namespace Redbeed\OpenOverlay\Listeners\Twitch;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Redbeed\OpenOverlay\Events\TwitchBotTokenExpires;
+use Redbeed\OpenOverlay\Events\Twitch\BotTokenExpires;
 use Redbeed\OpenOverlay\Service\Twitch\AuthClient;
 
-class UpdateTwitchBotToken
+class UpdateBotToken
 {
-    public function handle(TwitchBotTokenExpires $event)
+    public function handle(BotTokenExpires $event)
     {
         if ($event->botModel->service !== 'twitch' || empty($event->botModel->service_refresh_token)) {
             return;
