@@ -8,8 +8,10 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
+use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
+use Redbeed\OpenOverlay\Support\ViewerInChat;
 
 class TwitchChatMessageReceived implements ShouldBroadcastNow
 {
@@ -23,12 +25,26 @@ class TwitchChatMessageReceived implements ShouldBroadcastNow
     public function __construct(ChatMessage $message)
     {
         $this->message = $message;
+
+        /** @var Connection twitchUser */
         $this->twitchUser = Connection::where('service_username', $this->message->channel)->first();
+
+        $this->viewerInChatListener();
+    }
+
+    public function viewerInChatListener()
+    {
+        $modules = config('openoverlay.modules', []);
+        if (empty($modules[ViewerInChat::class])) {
+            return;
+        }
+
+        ViewerInChat::add($this->message->username, $this->twitchUser);
     }
 
     public function broadcastOn(): Channel
     {
-        return new Channel('twitch.'.$this->twitchUser->service_user_id);
+        return new Channel('twitch.' . $this->twitchUser->service_user_id);
     }
 
     public function broadcastAs(): string

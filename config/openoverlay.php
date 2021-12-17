@@ -35,6 +35,10 @@ return [
         \Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid::class => [
             'message' => 'Follow :username over at :twitchUrl. They were last playing :gameName'
         ],
+
+        \Redbeed\OpenOverlay\Support\ViewerInChat::class => [
+            'reset' => -1
+        ]
     ],
 
     'webhook' => [

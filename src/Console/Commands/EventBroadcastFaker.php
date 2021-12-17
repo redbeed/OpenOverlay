@@ -10,6 +10,8 @@ use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelSubscribeFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelUpdateFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\Fake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelFollowFake;
+use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOffline;
+use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOnline;
 use Redbeed\OpenOverlay\Events\TwitchEventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 
@@ -35,6 +37,8 @@ class EventBroadcastFaker extends EventSubListingCommand
         'channel.subscribe' => ChannelSubscribeFake::class,
         'channel.cheer' => ChannelCheerFake::class,
         'channel.raid' => ChannelRaidFake::class,
+        'stream.online' => StreamOnline::class,
+        'stream.offline' => StreamOffline::class,
     ];
 
     /**

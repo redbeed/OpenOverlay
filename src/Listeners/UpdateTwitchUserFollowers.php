@@ -28,6 +28,10 @@ class UpdateTwitchUserFollowers implements ShouldQueue
     private function refreshFollowers(UserConnectionChanged $event) {
         $twitchConnection = $event->user->connections()->where('service', 'twitch')->first();
 
+        if($twitchConnection === null){
+            return;
+        }
+
         $userClient = new UsersClient();
         $followerList = $userClient
             ->withAppToken($twitchConnection->service_token)
