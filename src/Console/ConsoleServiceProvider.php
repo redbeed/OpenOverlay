@@ -11,6 +11,7 @@ use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
 use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotCommandCommand;
 use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotSchedulingCommand;
 use Redbeed\OpenOverlay\Console\Commands\SecretCommand;
+use Redbeed\OpenOverlay\Console\Commands\Twitch\RefresherCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,8 @@ class ConsoleServiceProvider extends ServiceProvider
 
             MakeBotCommandCommand::class,
             MakeBotSchedulingCommand::class,
+
+            RefresherCommand::class,
         ]);
     }
 
