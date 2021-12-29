@@ -51,3 +51,6 @@ class AuthController extends SocialiteController
         return redirect()->route('dashboard');
     }
 }
+
+
+https://local-movrs.openoverlay.dev/connection/callback?code=qqys2acl61kguoldnd1whcaxlkjcue&scope=user%3Aread%3Aemail+user%3Aread%3Abroadcast+channel%3Aread%3Asubscriptions+channel%3Aread%3Aredemptions+bits%3Aread+chat%3Aedit+chat%3Aread&state=G0g27kgPtcXxN1nmgrUguldhoFBXryYwMWRIl98d

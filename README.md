@@ -51,6 +51,8 @@ TWITCH_CLIENT_SECRET=
 
 OVERLAY_SECRET=
 OVERLAY_TWITCH_APP_TOKEN=
+
+TWITCH_REDIRECT_URI=${APP_URL}/connection/callback
 ```
 
 Add `UserOpenOverlay` trait to `User.php`

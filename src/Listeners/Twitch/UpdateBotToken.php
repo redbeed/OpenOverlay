@@ -23,8 +23,6 @@ class UpdateBotToken
             Log::error("Bot Connection deleted");
             Log::error($exception);
 
-            //$event->botModel->delete();
-
             return;
         }
 
