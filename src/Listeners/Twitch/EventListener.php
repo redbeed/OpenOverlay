@@ -15,12 +15,12 @@ abstract class EventListener implements ShouldQueue
 
     public function eventValid(EventReceived $event): bool
     {
-        return $event->event->event_type !== $this->eventType();
+        return $event->event->event_type === $this->eventType();
     }
 
     public function handle(EventReceived $event)
     {
-        if ($this->eventType() == false) {
+        if ($this->eventValid($event) === false) {
             return;
         }
 
