@@ -3,8 +3,9 @@
 namespace Redbeed\OpenOverlay\Console;
 
 use Illuminate\Support\ServiceProvider;
-use Redbeed\OpenOverlay\Console\Commands\ChatBotCommand;
-use Redbeed\OpenOverlay\Console\Commands\ChatBotMessageCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\RestartServerCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\StartCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventBroadcastFaker;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
@@ -32,7 +33,8 @@ class ConsoleServiceProvider extends ServiceProvider
             EventSubDeleteCommand::class,
             EventBroadcastFaker::class,
             SecretCommand::class,
-            ChatBotCommand::class,
+            StartCommand::class,
+            RestartServerCommand::class,
 
             MakeBotCommandCommand::class,
             MakeBotSchedulingCommand::class,
@@ -44,7 +46,7 @@ class ConsoleServiceProvider extends ServiceProvider
     protected function registerGlobalCommands(): void
     {
         $this->commands([
-            ChatBotMessageCommand::class,
+            SendMessageCommand::class,
         ]);
     }
 }

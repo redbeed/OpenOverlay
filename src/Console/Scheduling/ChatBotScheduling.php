@@ -4,7 +4,7 @@ namespace Redbeed\OpenOverlay\Console\Scheduling;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
-use Redbeed\OpenOverlay\Console\Commands\ChatBotMessageCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
 use Redbeed\OpenOverlay\Models\BotConnection;
 
 class ChatBotScheduling extends Schedule
@@ -39,7 +39,7 @@ class ChatBotScheduling extends Schedule
             return null;
         }
 
-        return $this->schedule($schedule->command(ChatBotMessageCommand::class, [$user->id, $this->message()]));
+        return $this->schedule($schedule->command(SendMessageCommand::class, [$user->id, $this->message()]));
     }
 
 }
