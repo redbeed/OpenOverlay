@@ -25,6 +25,8 @@ class StreamOnline implements ShouldBroadcastNow
             $this->twitchEvent->event_user_id,
             $this->twitchEvent->event_data['started_at']
         );
+
+        event(new RefresherEvent($this->twitchUser));
     }
 
     public function broadcastOn(): Channel

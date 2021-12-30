@@ -29,6 +29,8 @@ class StreamOffline implements ShouldBroadcastNow
 
         ViewerInChat::clear($this->twitchUser);
         StreamerOnline::setOffline($this->twitchEvent->event_user_id);
+
+        event(new RefresherEvent($this->twitchUser));
     }
 
     public function broadcastOn(): Channel
@@ -45,7 +47,7 @@ class StreamOffline implements ShouldBroadcastNow
     {
         return [
             'started' => $this->streamStarted,
-            'ended' => Carbon::now(),
+            'ended'   => Carbon::now(),
         ];
     }
 }
