@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Console\Commands;
+namespace Redbeed\OpenOverlay\Console\Commands\ChatBot;
 
 use Illuminate\Console\Command;
 use Ratchet\Client\WebSocket;
@@ -11,7 +11,7 @@ use Redbeed\OpenOverlay\Models\User\UserOpenOverlay;
 use Redbeed\OpenOverlay\OpenOverlay;
 use function Ratchet\Client\connect;
 
-class ChatBotMessageCommand extends Command
+class SendMessageCommand extends Command
 {
     /**
      * The name and signature of the console command.

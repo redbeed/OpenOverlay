@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Redbeed\OpenOverlay\Console\Commands\ChatBotMessageCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
 use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Service\Twitch\ChannelsClient;
@@ -48,7 +48,7 @@ class AutoShoutOutRaid implements ShouldQueue
             // ignore
         }
 
-        Artisan::call(ChatBotMessageCommand::class, [
+        Artisan::call(SendMessageCommand::class, [
             'userId' => $connection->user->id,
             'message' => __($chatMessage, [
                 'username' => $eventData['from_broadcaster_user_name'],
