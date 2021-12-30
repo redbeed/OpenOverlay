@@ -30,6 +30,3 @@ abstract class EventListener implements ShouldQueue
 
     abstract public function handleEvent(EventReceived $event): void;
 }
-
-
-#68747470733a2f2f6769746875622d726561646d652d737461
