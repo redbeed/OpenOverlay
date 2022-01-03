@@ -2,7 +2,6 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands\ChatBot;
 
-use Illuminate\Console\Command;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
 use Redbeed\OpenOverlay\Models\BotConnection;
@@ -11,14 +10,14 @@ use Redbeed\OpenOverlay\Models\User\UserOpenOverlay;
 use Redbeed\OpenOverlay\OpenOverlay;
 use function Ratchet\Client\connect;
 
-class SendMessageCommand extends Command
+class SendMessageCommand extends RuntimeCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'overlay:chatbot:message {userId} {message} {--botId=}';
+    protected $signature = 'overlay:chatbot:message {userId} {message} {--botId=} {--max-runtime=60}';
 
     /**
      * The console command description.
@@ -27,9 +26,10 @@ class SendMessageCommand extends Command
      */
     protected $description = 'Send Chatbot messages';
 
-
     public function handle(): void
     {
+        $this->configureMaxRuntime();
+
         $user = $this->getUser();
         $message = $this->argument('message');
 
@@ -50,25 +50,34 @@ class SendMessageCommand extends Command
             return;
         }
 
-        connect(ConnectionHandler::TWITCH_IRC_URL)->then(function (WebSocket $conn) use ($bot, $user, $message) {
-            $connectionHandler = new ConnectionHandler($conn);
+        connect(ConnectionHandler::TWITCH_IRC_URL, [], [], $this->loop)
+            ->then(function (WebSocket $conn) use ($bot, $user, $message) {
+                $connectionHandler = new ConnectionHandler($conn);
+                $connectionHandler->auth($bot);
 
-            $connectionHandler->auth($bot);
+                /** @var Connection[] $twitchUsers */
+                $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
-            /** @var Connection[] $twitchUsers */
-            $twitchUsers = $user->connections()->where('service', 'twitch')->get();
+                foreach ($twitchUsers as $twitchUser) {
+                    $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () use ($conn) {
+                        $this->softShutdown();
+                    });
 
-            foreach ($twitchUsers as $twitchUser) {
-                $connectionHandler->joinChannel($twitchUser);
-                $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
+                    $connectionHandler->joinChannel($twitchUser);
+                    $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
+                }
 
-                $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () use ($conn) {
-                    $conn->close();
-                });
-            }
+            }, function ($e) {
+                echo "Could not connect: {$e->getMessage()}\n";
+            });
+    }
 
-        }, function ($e) {
-            echo "Could not connect: {$e->getMessage()}\n";
+    private function configureMaxRuntime()
+    {
+        $maxRuntime = $this->option('max-runtime');
+
+        $this->loop->addPeriodicTimer($maxRuntime, function () {
+            $this->softShutdown();
         });
     }
 

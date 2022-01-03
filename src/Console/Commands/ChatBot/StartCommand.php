@@ -2,15 +2,13 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands\ChatBot;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Ratchet\Client\WebSocket;
-use React\EventLoop\Loop;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
 use Redbeed\OpenOverlay\Models\BotConnection;
 use function Ratchet\Client\connect;
 
-class StartCommand extends Command
+class StartCommand extends RuntimeCommand
 {
 
     const RESTART_CACHE_KEY = 'redbeed:open-overlay:chat-bot:restart';
@@ -31,34 +29,16 @@ class StartCommand extends Command
 
     /**
      *
-     * Get Loop instance
-     *
-     * @var Loop
-     */
-    private $loop;
-
-    /**
-     *
      * Timestamp of the last restart
      *
-     * @var int
      */
-    private $lastRestart;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->loop = Loop::get();
-    }
+    private int $lastRestart;
 
 
     public function handle(): void
     {
-
         $this->configureRestartTimer();
         $this->configureChatbot();
-
     }
 
     private function configureRestartTimer()
@@ -79,8 +59,7 @@ class StartCommand extends Command
 
         connect(ConnectionHandler::TWITCH_IRC_URL, [], [], $this->loop)
             ->then(function (WebSocket $conn) use ($bot) {
-                $connectionHandler = new ConnectionHandler($conn);
-
+                $connectionHandler = ConnectionHandler::withPrivateMessageHandler($conn);
                 $connectionHandler->auth($bot);
 
                 foreach ($bot->users as $user) {
@@ -101,13 +80,6 @@ class StartCommand extends Command
             }, function ($e) {
                 echo "Could not connect: {$e->getMessage()}\n";
             });
-    }
-
-    protected function softShutdown()
-    {
-        echo "Chatbot Service will shutdown." . PHP_EOL;
-
-        $this->loop->stop();
     }
 
     public function getLastShutdown()

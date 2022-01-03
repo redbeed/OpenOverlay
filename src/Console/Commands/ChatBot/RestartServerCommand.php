@@ -34,6 +34,4 @@ class RestartServerCommand extends Command
 
         $this->info('Broadcasted restart signal to Chat Bot Service!');
     }
-
-
 }
