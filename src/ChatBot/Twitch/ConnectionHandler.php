@@ -43,17 +43,40 @@ class ConnectionHandler
     {
         $this->connection = $connection;
 
-        $this->connection->on('message', function ($message) {
-            $this->messageReceived($message);
+        $this->connection->on('message', function ($message) use ($connection) {
+            $this->basicMessageHandler($message);
         });
     }
 
-    public function messageReceived(string $message): void
+    public static function withPrivateMessageHandler(WebSocket $connection): ConnectionHandler
     {
+        $connection = new self($connection);
+
+        $connection->connection->on('message', function ($message) use ($connection) {
+            $connection->privateMessageHandler($message);
+        });
+
+        return $connection;
+    }
+
+    public function privateMessageHandler(string $message): void
+    {
+        // if is chat message
+        if (strpos($message, 'PRIVMSG') !== false) {
+            $this->chatMessageReceived($message);
+        }
+    }
+
+    public function basicMessageHandler(string $message): void
+    {
+        // ignore for basic handler
+        if (strpos($message, 'PRIVMSG') !== false) {
+            return;
+        }
 
         // get join message
         if (strpos($message, 'NOTICE * :Login authentication failed') !== false) {
-            echo "LOGIN | " . $message . "\r\n\r\n";
+            $this->write("LOGIN | " . $message);
             event(new BotTokenExpires($this->bot));
 
             $this->connection->close();
@@ -67,13 +90,6 @@ class ConnectionHandler
             return;
         }
 
-        // if is chat message
-        if (strpos($message, 'PRIVMSG') !== false) {
-            $this->chatMessageReceived($message);
-
-            return;
-        }
-
         // get join message
         if (strpos($message, 'JOIN') !== false) {
             $this->joinMessageReceived($message);
@@ -81,13 +97,13 @@ class ConnectionHandler
             return;
         }
 
-        echo "UNKOWN | " . $message . "\r\n\r\n";
+        $this->write("UNKOWN | " . $message . PHP_EOL);
     }
 
     public function pingReceived(string $message): void
     {
         $this->send('PONG :tmi.twitch.tv');
-        echo "PING PONG done" . "\r\n";
+        $this->write("PING PONG done");
     }
 
     public function joinMessageReceived(string $message): void
@@ -95,24 +111,28 @@ class ConnectionHandler
         try {
             preg_match("/:(.*)\!.*#(.*)/", $message, $matches);
 
-            echo "BOT (" . $matches[1] . ") joined " . $matches[2] . "\r\n";
+            $this->write("BOT (" . $matches[1] . ") joined " . $matches[2]);
+
             $channelName = trim(strtolower($matches[2]));
 
             $this->joinedChannel[] = $channelName;
             $this->runChannelQueue($channelName);
 
             if (isset($this->joinedCallBack[$channelName])) {
+                $this->write("   -> callback started");
                 $this->joinedCallBack[$channelName]();
             }
 
         } catch (\Exception $exception) {
-            echo $exception->getMessage() . ' ' . $exception->getLine() . "\r\n";
+            $this->write($exception->getMessage() . ' ' . $exception->getLine() . PHP_EOL);
         }
     }
 
     public function addJoinedCallBack(string $channelName, callable $callback): void
     {
         $channelName = strtolower($channelName);
+        $this->write('HELLOP! ' . $channelName);
+
         $this->joinedCallBack[$channelName] = $callback;
     }
 
@@ -126,7 +146,7 @@ class ConnectionHandler
 
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
 
-        echo $model->channel . ' | ' . $model->username . ': ' . $model->message . "\r\n";
+        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message);
 
         try {
             // Check commands
@@ -134,17 +154,16 @@ class ConnectionHandler
                 $commandHandler->handle($model);
             }
         } catch (\Exception $exception) {
-            echo $exception->getMessage() . "\r\n";
-            echo $exception->getFile() . "\r\n";
-            echo $exception->getLine() . "\r\n";
+            $this->write($exception->getMessage());
+            $this->write($exception->getFile() . ' #' . $exception->getLine());
         }
 
-        echo $model->channel . ' | ' . $model->username . ': ' . $model->message . " HANDELD\r\n";
+        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message . ' HANDLED');
 
         try {
             event(new ChatMessageReceived($model));
         } catch (\Exception $exception) {
-            echo "  -> EVENT ERROR: " . $exception->getMessage()."\r\n";
+            $this->write("  -> EVENT ERROR: " . $exception->getMessage());
         }
     }
 
@@ -170,6 +189,7 @@ class ConnectionHandler
         $this->loadEmotes($channel);
 
         $this->send('JOIN #' . strtolower($channelName));
+        $this->write('JOIN #' . strtolower($channelName));
     }
 
     private function loadEmotes(Connection $channel)
@@ -199,7 +219,7 @@ class ConnectionHandler
     public function sendChatMessage(string $channelName, string $message): void
     {
         $lowerChannelName = strtolower($channelName);
-        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . "\r\n";
+        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . PHP_EOL;
 
         // send message after channel joined
         if (!in_array($lowerChannelName, $this->joinedChannel)) {
@@ -209,7 +229,7 @@ class ConnectionHandler
         }
 
         $this->send($message);
-        echo $message;
+        $this->write($message);
     }
 
     public function initCustomCommands(): void
@@ -223,6 +243,11 @@ class ConnectionHandler
         foreach ($commandClasses as $commandClass) {
             $this->customCommands[] = new $commandClass($this);
         }
+    }
+
+    protected function write(string $output, $newLine = true)
+    {
+        echo $output . ($newLine ? PHP_EOL : '');
     }
 
 }
