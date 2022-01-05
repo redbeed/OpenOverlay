@@ -135,7 +135,7 @@ class ConnectionHandler
         $this->joinedCallBack[$channelName] = $callback;
 
         // channel already joined
-        if(!empty($this->joinedChannel[$channelName])) {
+        if(in_array($channelName, $this->joinedChannel)) {
             $this->runChannelQueue($channelName);
         }
     }
