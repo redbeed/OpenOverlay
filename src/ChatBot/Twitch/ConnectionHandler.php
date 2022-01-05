@@ -118,13 +118,19 @@ class ConnectionHandler
             $this->joinedChannel[] = $channelName;
             $this->runChannelQueue($channelName);
 
-            if (isset($this->joinedCallBack[$channelName])) {
-                $this->write("   -> callback started");
-                $this->joinedCallBack[$channelName]();
-            }
+            $this->afterJoinCallBacks($channelName);
 
         } catch (\Exception $exception) {
             $this->write($exception->getMessage() . ' ' . $exception->getLine() . PHP_EOL);
+        }
+    }
+
+    private function afterJoinCallBacks(string $channelName)
+    {
+        $channelName = strtolower($channelName);
+
+        if (isset($this->joinedCallBack[$channelName])) {
+            $this->joinedCallBack[$channelName]();
         }
     }
 
@@ -135,8 +141,8 @@ class ConnectionHandler
         $this->joinedCallBack[$channelName] = $callback;
 
         // channel already joined
-        if(in_array($channelName, $this->joinedChannel)) {
-            $this->runChannelQueue($channelName);
+        if (in_array($channelName, $this->joinedChannel)) {
+            $this->afterJoinCallBacks($channelName);
         }
     }
 
