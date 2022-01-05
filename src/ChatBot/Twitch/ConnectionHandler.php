@@ -97,7 +97,7 @@ class ConnectionHandler
             return;
         }
 
-        $this->write("UNKOWN | " . $message . PHP_EOL);
+        $this->write("UNKOWN | " . $message . PHP_EOL, '');
     }
 
     public function pingReceived(string $message): void
@@ -121,7 +121,7 @@ class ConnectionHandler
             $this->afterJoinCallBacks($channelName);
 
         } catch (\Exception $exception) {
-            $this->write($exception->getMessage() . ' ' . $exception->getLine() . PHP_EOL);
+            $this->write($exception->getMessage() . ' ' . $exception->getLine() . PHP_EOL, 'ERROR');
         }
     }
 
@@ -130,7 +130,10 @@ class ConnectionHandler
         $channelName = strtolower($channelName);
 
         if (isset($this->joinedCallBack[$channelName])) {
+
+            $this->write('CALL CALLBACK FOR ' . $channelName);
             $this->joinedCallBack[$channelName]();
+
         }
     }
 
@@ -139,6 +142,7 @@ class ConnectionHandler
         $channelName = strtolower($channelName);
 
         $this->joinedCallBack[$channelName] = $callback;
+        $this->write('Callback added for ' . $channelName);
 
         // channel already joined
         if (in_array($channelName, $this->joinedChannel)) {
@@ -156,7 +160,7 @@ class ConnectionHandler
 
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
 
-        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message);
+        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message, 'Twitch');
 
         try {
             // Check commands
@@ -164,8 +168,8 @@ class ConnectionHandler
                 $commandHandler->handle($model);
             }
         } catch (\Exception $exception) {
-            $this->write($exception->getMessage());
-            $this->write($exception->getFile() . ' #' . $exception->getLine());
+            $this->write($exception->getMessage(), 'ERROR');
+            $this->write($exception->getFile() . ' #' . $exception->getLine(), 'ERROR');
         }
 
         $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message . ' HANDLED');
@@ -173,7 +177,7 @@ class ConnectionHandler
         try {
             event(new ChatMessageReceived($model));
         } catch (\Exception $exception) {
-            $this->write("  -> EVENT ERROR: " . $exception->getMessage());
+            $this->write("  -> EVENT ERROR: " . $exception->getMessage(), 'ERROR');
         }
     }
 
@@ -255,9 +259,10 @@ class ConnectionHandler
         }
     }
 
-    protected function write(string $output, $newLine = true)
+    protected function write(string $output, string $title = 'OpenOverlay', $newLine = true)
     {
-        echo $output . ($newLine ? PHP_EOL : '');
+        $title = !empty($title) ? '[' . $title . ']' : '';
+        echo trim($title . ' ' . $output) . ($newLine ? PHP_EOL : '');
     }
 
 }

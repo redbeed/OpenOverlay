@@ -64,7 +64,7 @@ class SendMessageCommand extends RuntimeCommand
                     $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
 
                     // close connection after message send (5s delay)
-                    $connectionHandler->addJoinedCallBack($twitchUser, function () {
+                    $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () {
 
                         // add delay to make sure the messages send correctly
                         $this->loop->addTimer(5, function () {
