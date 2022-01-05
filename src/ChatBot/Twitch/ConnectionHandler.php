@@ -131,9 +131,13 @@ class ConnectionHandler
     public function addJoinedCallBack(string $channelName, callable $callback): void
     {
         $channelName = strtolower($channelName);
-        $this->write('HELLOP! ' . $channelName);
 
         $this->joinedCallBack[$channelName] = $callback;
+
+        // channel already joined
+        if(!empty($this->joinedChannel[$channelName])) {
+            $this->runChannelQueue($channelName);
+        }
     }
 
     public function chatMessageReceived(string $message): void

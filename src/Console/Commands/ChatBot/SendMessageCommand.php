@@ -59,12 +59,18 @@ class SendMessageCommand extends RuntimeCommand
                 $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
                 foreach ($twitchUsers as $twitchUser) {
-                    $connectionHandler->addJoinedCallBack($twitchUser->service_username, function () use ($conn) {
-                        $this->softShutdown();
-                    });
 
                     $connectionHandler->joinChannel($twitchUser);
                     $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
+
+                    // close connection after message send (5s delay)
+                    $connectionHandler->addJoinedCallBack($twitchUser, function () {
+
+                        // add delay to make sure the messages send correctly
+                        $this->loop->addTimer(5, function () {
+                            $this->softShutdown();
+                        });
+                    });
                 }
 
             }, function ($e) {
