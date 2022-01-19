@@ -33,6 +33,7 @@ class UsersClient extends ApiClient
     public function followers(string $twitchUserId): array
     {
         return $this
+            ->addAppToken()
             ->withOptions([
                 RequestOptions::QUERY => [
                     'to_id' => $twitchUserId,
@@ -44,6 +45,7 @@ class UsersClient extends ApiClient
     public function allFollowers(string $twitchUserId): array
     {
         $firstResponse = $this
+            ->addAppToken()
             ->withOptions([
                 RequestOptions::QUERY => [
                     'first' => 100,
@@ -56,6 +58,7 @@ class UsersClient extends ApiClient
 
         while ($totalFollowers > count($followers) || $paginationCursor !== null) {
             $response = $this
+                ->addAppToken()
                 ->withOptions([
                     RequestOptions::QUERY => [
                         'first' => 100,

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
-use Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Support\ViewerInChat;
