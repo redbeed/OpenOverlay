@@ -12,7 +12,7 @@
     "homepage": "https://github.com/redbeed/openoverlay",
     "keywords": ["Laravel", "OpenOverlay", "twitch", "Eventsub", "Bot", "IRC"],
     "require": {
-        "illuminate/support": "~7|~8",
+        "illuminate/support": "~8|~9",
         "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*",
         "socialiteproviders/twitch": "^5.3",
