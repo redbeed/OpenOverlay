@@ -2,6 +2,7 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 
 class UsersClient extends ApiClient
@@ -50,7 +51,8 @@ class UsersClient extends ApiClient
                 RequestOptions::QUERY => [
                     'first' => 100,
                 ],
-            ])->followers($twitchUserId);
+            ])
+            ->followers($twitchUserId);
 
         $totalFollowers = $firstResponse['total'];
         $followers = $firstResponse['data'];

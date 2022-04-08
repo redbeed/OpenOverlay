@@ -80,7 +80,7 @@ class ApiClient
     public function withOptions(array $options)
     {
         $self = clone $this;
-        $self->options = array_merge_recursive($this->options, $options);
+        $self->options = array_replace_recursive($this->options, $options);
 
         return $self;
     }
@@ -107,6 +107,7 @@ class ApiClient
      */
     public function request(string $method, string $url)
     {
+        dump($this->options);
         $response = $this->httpClient->request($method, $url, $this->options);
         $json = (string)$response->getBody();
 
