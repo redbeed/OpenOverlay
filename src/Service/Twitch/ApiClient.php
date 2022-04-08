@@ -107,7 +107,6 @@ class ApiClient
      */
     public function request(string $method, string $url)
     {
-        dump($this->options);
         $response = $this->httpClient->request($method, $url, $this->options);
         $json = (string)$response->getBody();
 
