@@ -5,8 +5,6 @@ namespace Redbeed\OpenOverlay\Models\Twitch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Redbeed\OpenOverlay\Database\Factories\EventSubEventsFactory;
-use Redbeed\OpenOverlay\Models\User\Connection;
-use Redbeed\OpenOverlay\OpenOverlay;
 
 class EventSubEvents extends Model
 {

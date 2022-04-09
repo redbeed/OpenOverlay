@@ -2,7 +2,6 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 
 class UsersClient extends ApiClient
