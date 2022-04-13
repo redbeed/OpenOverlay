@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Automations\Filters\ChatMessage;
+namespace Redbeed\OpenOverlay\Automations\Filters\Twitch\ChatMessage;
 
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Str;
