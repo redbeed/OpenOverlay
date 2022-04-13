@@ -17,21 +17,31 @@ class ChatMessageContainsFilter extends Filter
     public static string $description = 'Filter chat messages by string  ';
 
     private string $needle;
+    private bool $caseSensitive;
 
     /**
      * @var TwitchChatMessageTrigger
      */
     protected $trigger;
 
-    public function __construct(string $needle)
+    public function __construct(string $needle, bool $caseSensitive = false)
     {
         $this->needle = $needle;
+        $this->caseSensitive = $caseSensitive;
     }
 
     #[Pure]
     public function validate(): bool
     {
-        return Str::contains($this->trigger->message->message, $this->needle);
+        $message = $this->trigger->message->message;
+        $needle = $this->needle;
+
+        if (!$this->caseSensitive) {
+            $message = Str::lower($message);
+            $needle = Str::lower($needle);
+        }
+
+        return Str::contains($message, $needle);
     }
 
     /**

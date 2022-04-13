@@ -2,7 +2,10 @@
 
 namespace Redbeed\OpenOverlay\Automations;
 
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Redbeed\OpenOverlay\Automations\Triggers\ScheduleTrigger;
 use Redbeed\OpenOverlay\Support\Facades\Automation;
 
 class AutomationsServiceProvider extends ServiceProvider
@@ -31,6 +34,10 @@ class AutomationsServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        //
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->call(function () {
+                \automation(new ScheduleTrigger());
+            })->everyMinute();
+        });
     }
 }

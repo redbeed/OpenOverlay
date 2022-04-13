@@ -15,6 +15,7 @@ class ChatMessageContainsWithPatternFilter extends Filter
     public static string $description = 'Filter chat messages by string  ';
 
     private string $needle;
+    private bool $caseSensitive;
 
     /** @var string[] */
     private array $regexPatterns;
@@ -25,15 +26,24 @@ class ChatMessageContainsWithPatternFilter extends Filter
     protected $trigger;
 
 
-    public function __construct(string $needle, array $regexPatterns)
+    public function __construct(string $needle, array $regexPatterns, bool $needleCaseSensitive = false)
     {
         $this->needle = $needle;
         $this->regexPatterns = $regexPatterns;
+        $this->caseSensitive = $needleCaseSensitive;
     }
 
     public function validate(): bool
     {
-        if (!Str::contains($this->trigger->message->message, $this->needle)) {
+        $message = $this->trigger->message->message;
+        $needle = $this->needle;
+
+        if (!$this->caseSensitive) {
+            $message = Str::lower($message);
+            $needle = Str::lower($needle);
+        }
+
+        if (!Str::contains($message, $needle)) {
             return false;
         }
 

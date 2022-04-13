@@ -4,13 +4,17 @@ namespace Redbeed\OpenOverlay\Automations;
 
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
-use Redbeed\OpenOverlay\Automations\Actions\UsesVariables;
+use Redbeed\OpenOverlay\Automations\Actions\UseTwitchChatMessage;
+use Redbeed\OpenOverlay\Automations\Actions\UseVariables;
 use Redbeed\OpenOverlay\Automations\Filters\Filter;
+use Redbeed\OpenOverlay\Automations\Triggers\Trigger;
+use Redbeed\OpenOverlay\Automations\Triggers\TwitchChatMessageTrigger;
 
 class AutomationHandler
 {
 
-    private array $trigger = [];
+    /** @var Trigger */
+    private $trigger;
 
     public function __construct($trigger)
     {
@@ -54,8 +58,13 @@ class AutomationHandler
             $traits = class_uses($action);
 
             // Check if the action uses the UsesVariables trait and if so, add the variables to the action
-            if (in_array(UsesVariables::class, $traits)) {
+            if (in_array(UseVariables::class, $traits)) {
                 $action->addVariables($variables);
+            }
+
+            // Check if the action uses the UsesTwitchChatMessage trait and if so, add the message to the action
+            if (in_array(UseTwitchChatMessage::class, $traits) && $this->trigger instanceof TwitchChatMessageTrigger) {
+                $action->setChatMessage($this->trigger->message);
             }
 
             $action->handle();

@@ -65,8 +65,6 @@ class StartCommand extends RuntimeCommand
                 foreach ($bot->users as $user) {
                     $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
-                    $connectionHandler->initCustomCommands();
-
                     foreach ($twitchUsers as $twitchUser) {
                         $connectionHandler->joinChannel($twitchUser);
                         $connectionHandler->sendChatMessage($twitchUser->service_username, 'Hello');

@@ -2,21 +2,24 @@
 
 namespace Redbeed\OpenOverlay\Automations\Actions;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
 use Redbeed\OpenOverlay\Models\User\Connection;
 
-class TwitchChatBotMessage
+class TwitchRandomChatBotMessage
 {
     use UseVariables;
     use UseTwitchChatMessage;
 
     private Connection $connection;
-    private string $message;
 
-    public function __construct(string $message)
+    /** @var string[] */
+    private array $messages;
+
+    public function __construct(array $messages)
     {
-        $this->message = $message;
+        $this->messages = $messages;
     }
 
     public function handle()
@@ -24,7 +27,7 @@ class TwitchChatBotMessage
         Artisan::queue(SendMessageCommand::class, [
             'userId'  => $this->getUser()->id,
             '--botId' => $this->getBot()->id,
-            'message' => $this->replaceInString($this->message),
+            'message' => $this->replaceInString(Arr::random($this->messages)),
         ]);
     }
 }

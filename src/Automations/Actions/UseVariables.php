@@ -4,7 +4,7 @@ namespace Redbeed\OpenOverlay\Automations\Actions;
 
 use Illuminate\Support\Str;
 
-trait UsesVariables
+trait UseVariables
 {
     private array $variables = [];
 

@@ -57,20 +57,20 @@ class ConnectionHandler
     public function privateMessageHandler(string $message): void
     {
         // if is chat message
-        if (strpos($message, 'PRIVMSG') !== false) {
+        if (str_contains($message, 'PRIVMSG')) {
             $this->chatMessageReceived($message);
         }
     }
 
     public function basicMessageHandler(string $message): void
     {
-        // ignore for basic handler
-        if (strpos($message, 'PRIVMSG') !== false) {
+        // if is chat message starts with PRIVMSG ignore basic handler
+        if (str_contains($message, 'PRIVMSG')) {
             return;
         }
 
-        // get join message
-        if (strpos($message, 'NOTICE * :Login authentication failed') !== false) {
+        // if this message contains "Login authentication" reset bot connection
+        if (str_contains($message, 'NOTICE * :Login authentication failed')) {
             $this->write("LOGIN | " . $message);
             event(new BotTokenExpires($this->bot));
 
@@ -78,15 +78,15 @@ class ConnectionHandler
             return;
         }
 
-        // get join message
-        if (strpos($message, 'PING') !== false) {
+        // handle ping message from twitch
+        if (str_contains($message, 'PING')) {
             $this->pingReceived($message);
 
             return;
         }
 
-        // get join message
-        if (strpos($message, 'JOIN') !== false) {
+        // handle join confirmation
+        if (str_contains($message, 'JOIN')) {
             $this->joinMessageReceived($message);
 
             return;
@@ -147,7 +147,7 @@ class ConnectionHandler
 
     public function chatMessageReceived(string $message): void
     {
-        $model = ChatMessage::parseIRCMessage($message);
+        $model = ChatMessage::parseIRCMessage($this->bot, $message);
 
         if ($model === null) {
             return;
@@ -156,18 +156,6 @@ class ConnectionHandler
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
 
         $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message, 'Twitch');
-
-        try {
-            // Check commands
-            foreach ($this->customCommands as $commandHandler) {
-                $commandHandler->handle($model);
-            }
-        } catch (\Exception $exception) {
-            $this->write($exception->getMessage(), 'ERROR');
-            $this->write($exception->getFile() . ' #' . $exception->getLine(), 'ERROR');
-        }
-
-        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message . ' HANDLED');
 
         try {
             event(new ChatMessageReceived($model));
