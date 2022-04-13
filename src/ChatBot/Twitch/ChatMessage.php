@@ -2,12 +2,10 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
-use http\Client\Curl\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Redbeed\OpenOverlay\Models\BotConnection;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
-use Redbeed\OpenOverlay\Models\User\Connection;
 
 class ChatMessage
 {
@@ -39,9 +37,8 @@ class ChatMessage
     {
         try {
             preg_match("/:(.*)\!.*#(\S+) :(.*)/", $message, $matches);
-            $message = new ChatMessage($matches[2], $matches[1], $matches[3], $bot);
 
-            return $message;
+            return new ChatMessage($matches[2], $matches[1], $matches[3], $bot);
         } catch (\Exception $exception) {
             Log::error($exception);
         }

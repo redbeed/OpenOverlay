@@ -2,10 +2,7 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class ChannelsClient extends ApiClient
 {

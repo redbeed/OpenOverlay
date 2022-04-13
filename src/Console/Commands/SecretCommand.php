@@ -17,7 +17,7 @@ class SecretCommand extends EventSubListingCommand
 
     public function handle(): void
     {
-        $currentSecret = env(self::ENV_KEY);
+        $currentSecret = config('openoverlay.webhook.twitch.secret');
 
         if (!empty($currentSecret) && !$this->option('force')) {
             $this->warn('You already have a secret');
@@ -75,7 +75,7 @@ class SecretCommand extends EventSubListingCommand
 
     protected function keyReplacementPattern(): string
     {
-        $escaped = preg_quote('=' . env(self::ENV_KEY, ''), '/');
+        $escaped = preg_quote('=' . config('openoverlay.webhook.twitch.secret'), '/');
         return "/^" . self::ENV_KEY . "{$escaped}/m";
     }
 }

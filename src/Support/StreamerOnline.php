@@ -42,5 +42,4 @@ class StreamerOnline
     {
         Cache::pull(self::cacheKey($streamerId, $platform));
     }
-
 }

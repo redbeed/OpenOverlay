@@ -2,12 +2,17 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
+use Redbeed\OpenOverlay\Exceptions\AppTokenMissing;
 
 class UsersClient extends ApiClient
 {
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function byId(string $id): array
     {
         return $this
@@ -20,6 +25,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function byUsername(string $username): array
     {
         return $this
@@ -32,6 +41,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function followers(string $twitchUserId): array
     {
         return $this
@@ -44,6 +57,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users/follows');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function allFollowers(string $twitchUserId): array
     {
         $firstResponse = $this
@@ -80,6 +97,10 @@ class UsersClient extends ApiClient
         return $firstResponse;
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public static function lastGame(string $username): string
     {
         $users = (new self)->byUsername($username);

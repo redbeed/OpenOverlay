@@ -55,7 +55,7 @@ return [
 
             /**
              * Your personal and unique secret is used to validate a twitch callback
-             * If you change your secret all previous configures webhook callbacks will be end as invalid
+             * If you change your secret all previous configures webhook callbacks will be ended as invalid
              */
             'secret' => env('OVERLAY_SECRET'),
 

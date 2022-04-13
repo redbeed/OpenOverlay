@@ -37,8 +37,6 @@ class EventSubListingCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle()
     {
@@ -46,7 +44,7 @@ class EventSubListingCommand extends Command
         $subscriptions = $eventSubClient->subscriptions();
 
         $this->subscriptionsTable($subscriptions);
-        $this->info('Total EventSub subscriptions: '.$subscriptions->count());
+        $this->info('Total EventSub subscriptions: ' . $subscriptions->count());
     }
 
     protected function subscriptionsTable(Collection $subscriptions): void
@@ -55,10 +53,10 @@ class EventSubListingCommand extends Command
             /** @var EventSubscription $subscription */
 
             return [
-                'id' => $subscription->id,
-                'status' => $subscription->status,
-                'type' => $subscription->type,
-                'condition' => json_encode($subscription->condition),
+                'id'         => $subscription->id,
+                'status'     => $subscription->status,
+                'type'       => $subscription->type,
+                'condition'  => json_encode($subscription->condition),
                 'created_at' => $subscription->createdAt->toDateTimeLocalString(),
             ];
         });

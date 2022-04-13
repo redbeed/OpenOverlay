@@ -10,6 +10,7 @@ use Redbeed\OpenOverlay\Console\Commands\EventBroadcastFaker;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
 use Redbeed\OpenOverlay\Console\Commands\SecretCommand;
+use Redbeed\OpenOverlay\Console\Commands\Twitch\OnlineStatusCommand;
 use Redbeed\OpenOverlay\Console\Commands\Twitch\RefresherCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
@@ -35,6 +36,7 @@ class ConsoleServiceProvider extends ServiceProvider
             RestartServerCommand::class,
 
             RefresherCommand::class,
+            OnlineStatusCommand::class,
         ]);
     }
 

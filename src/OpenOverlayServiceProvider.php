@@ -4,6 +4,7 @@ namespace Redbeed\OpenOverlay;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Redbeed\OpenOverlay\Console\Commands\Twitch\OnlineStatusCommand;
 use Redbeed\OpenOverlay\Console\ConsoleServiceProvider;
 use Redbeed\OpenOverlay\Console\Scheduling\ChatBotScheduling;
 use Redbeed\OpenOverlay\Models\BotConnection;
@@ -18,9 +19,6 @@ class OpenOverlayServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'redbeed');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'redbeed');
-
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadRoutesFrom(__DIR__ . '/../routes/openoverlay.php');
 
@@ -28,6 +26,14 @@ class OpenOverlayServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
+
+        // Register schedule
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            // check streamer status every hour
+            $schedule
+                ->command(OnlineStatusCommand::class, ['--all' => true])->hourly()
+                ->withoutOverlapping();
+        });
     }
 
     /**
