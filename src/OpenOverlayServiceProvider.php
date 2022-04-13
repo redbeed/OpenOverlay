@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Redbeed\OpenOverlay\Console\ConsoleServiceProvider;
 use Redbeed\OpenOverlay\Console\Scheduling\ChatBotScheduling;
 use Redbeed\OpenOverlay\Models\BotConnection;
+use Redbeed\OpenOverlay\Automations\AutomationsServiceProvider;
 
 class OpenOverlayServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,7 @@ class OpenOverlayServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ConsoleServiceProvider::class);
+        $this->app->register(AutomationsServiceProvider::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../config/openoverlay.php', 'openoverlay');
 

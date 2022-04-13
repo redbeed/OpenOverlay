@@ -3,13 +3,11 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
+use Illuminate\Support\Facades\Log;
 use Ratchet\Client\WebSocket;
-use Redbeed\OpenOverlay\ChatBot\Commands\BotCommand;
-use Redbeed\OpenOverlay\ChatBot\Commands\SimpleBotCommands;
 use Redbeed\OpenOverlay\Events\Twitch\BotTokenExpires;
 use Redbeed\OpenOverlay\Events\Twitch\ChatMessageReceived;
 use Redbeed\OpenOverlay\Models\BotConnection;
-use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Service\Twitch\ChatEmotesClient;
 
@@ -22,9 +20,6 @@ class ConnectionHandler
 
     /** @var BotConnection */
     private $bot;
-
-    /** @var BotCommand[] */
-    private $customCommands = [];
 
     /** @var string[] */
     private $joinedChannel = [];
@@ -177,6 +172,7 @@ class ConnectionHandler
         try {
             event(new ChatMessageReceived($model));
         } catch (\Exception $exception) {
+            Log::error($exception);
             $this->write("  -> EVENT ERROR: " . $exception->getMessage(), 'ERROR');
         }
     }
@@ -244,19 +240,6 @@ class ConnectionHandler
 
         $this->send($message);
         $this->write($message);
-    }
-
-    public function initCustomCommands(): void
-    {
-        /** @var BotCommand[] $commandClasses */
-        $commandClasses = config('openoverlay.bot.commands.advanced');
-
-        // add simple command handler
-        $commandClasses[] = SimpleBotCommands::class;
-
-        foreach ($commandClasses as $commandClass) {
-            $this->customCommands[] = new $commandClass($this);
-        }
     }
 
     protected function write(string $output, string $title = 'OpenOverlay', $newLine = true)

@@ -9,8 +9,6 @@ use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventBroadcastFaker;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
-use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotCommandCommand;
-use Redbeed\OpenOverlay\Console\Commands\Make\MakeBotSchedulingCommand;
 use Redbeed\OpenOverlay\Console\Commands\SecretCommand;
 use Redbeed\OpenOverlay\Console\Commands\Twitch\RefresherCommand;
 
@@ -35,9 +33,6 @@ class ConsoleServiceProvider extends ServiceProvider
             SecretCommand::class,
             StartCommand::class,
             RestartServerCommand::class,
-
-            MakeBotCommandCommand::class,
-            MakeBotSchedulingCommand::class,
 
             RefresherCommand::class,
         ]);

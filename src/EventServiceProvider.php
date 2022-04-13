@@ -3,7 +3,11 @@
 namespace Redbeed\OpenOverlay;
 
 use \Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Redbeed\OpenOverlay\Automations\Triggers\TwitchChatMessageTrigger;
 use Redbeed\OpenOverlay\Events\Twitch\BotTokenExpires;
+use Redbeed\OpenOverlay\Events\Twitch\ChatMessageReceived;
 use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Events\Twitch\RefresherEvent;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
@@ -45,6 +49,7 @@ class EventServiceProvider extends ServiceProvider
         $listen[UserConnectionChanged::class][] = NewConnectionRefresher::class;
         $listen[RefresherEvent::class][] = StandardRefresher::class;
 
+
         if (config('openoverlay.service.twitch.save.follower', false) === true) {
             $listen[EventReceived::class][] = NewFollowerListener::class;
         }
@@ -53,8 +58,13 @@ class EventServiceProvider extends ServiceProvider
             $listen[EventReceived::class][] = NewSubscriberListener::class;
         }
 
+        Event::listen(function (ChatMessageReceived $event){
+            automation(new TwitchChatMessageTrigger($event->message));
+        });
+
         return $listen;
     }
+
 
     public function autoShoutOutListener()
     {

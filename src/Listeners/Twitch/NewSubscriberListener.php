@@ -22,7 +22,7 @@ class NewSubscriberListener extends EventListener
         ], [
             'subscriber_username' => $subscriberData['user_name'],
             'tier'                => $subscriberData['user_name'],
-            'tier_name'           => $subscriberData['plan_name'],
+            'tier_name'           => $subscriberData['plan_name'] ?? '',
             'is_gift'             => $subscriberData['is_gift'],
         ]);
     }

@@ -3,6 +3,8 @@
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class UsersClient extends ApiClient
 {
@@ -76,5 +78,20 @@ class UsersClient extends ApiClient
         $firstResponse['pagination'] = [];
 
         return $firstResponse;
+    }
+
+    public static function lastGame(string $username): string
+    {
+        $users = (new self)->byUsername($username);
+        if (empty($users['data']) || count($users['data']) === 0) {
+            return '';
+        }
+
+        $user = Arr::first($users['data']);
+        if (empty($user) || empty($user['id'])) {
+            return '';
+        }
+
+        return (new ChannelsClient())->lastGame($user['id']);
     }
 }

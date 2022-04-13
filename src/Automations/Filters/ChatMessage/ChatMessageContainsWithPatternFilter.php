@@ -1,0 +1,88 @@
+<?php
+
+namespace Redbeed\OpenOverlay\Automations\Filters\ChatMessage;
+
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Str;
+use Redbeed\OpenOverlay\Automations\Filters\Filter;
+use Redbeed\OpenOverlay\Automations\Triggers\TwitchChatMessageTrigger;
+use Redbeed\OpenOverlay\Exceptions\AutomationFilterNotValid;
+use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
+
+class ChatMessageContainsWithPatternFilter extends Filter
+{
+    public static string $name = 'Chat message contains';
+    public static string $description = 'Filter chat messages by string  ';
+
+    private string $needle;
+
+    /** @var string[] */
+    private array $regexPatterns;
+
+    /**
+     * @var TwitchChatMessageTrigger
+     */
+    protected $trigger;
+
+
+    public function __construct(string $needle, array $regexPatterns)
+    {
+        $this->needle = $needle;
+        $this->regexPatterns = $regexPatterns;
+    }
+
+    public function validate(): bool
+    {
+        if (!Str::contains($this->trigger->message->message, $this->needle)) {
+            return false;
+        }
+
+        return preg_match($this->regex(), $this->trigger->message->message);
+    }
+
+    private function regex(): string
+    {
+        $regex = collect($this->regexPatterns)
+            ->mapWithKeys(function ($regex, $key) {
+                return [$key => '(?<' . $key . '>' . $regex . ')'];
+            })
+            ->prepend($this->needle)
+            ->implode(' ');
+
+        return '/' . $regex . '/';
+    }
+
+    private function matches(): array
+    {
+        $matches = [];
+        preg_match($this->regex(), $this->trigger->message->message, $matches);
+
+        return array_filter($matches, "is_string", ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * @throws AutomationFilterNotValid
+     */
+    public function validTrigger()
+    {
+        parent::validTrigger();
+
+        if (!($this->trigger instanceof TwitchChatMessageTrigger)) {
+            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of TwitchChatMessageTrigger but is ' . get_class($this->trigger));
+        }
+    }
+
+    public function variables(): array
+    {
+        return array_merge_recursive([
+            'username' => $this->trigger->message->username,
+            'game'     => function () {
+                try {
+                    return (new UsersClient())->lastGame($this->trigger->message->username);
+                } catch (ClientException) {
+                    return '';
+                }
+            },
+        ], $this->matches());
+    }
+}

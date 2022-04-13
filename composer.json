@@ -12,6 +12,7 @@
     "homepage": "https://github.com/redbeed/openoverlay",
     "keywords": ["Laravel", "OpenOverlay", "twitch", "Eventsub", "Bot", "IRC"],
     "require": {
+        "php": "^8.0",
         "illuminate/support": "~8|~9",
         "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*",
@@ -26,6 +27,9 @@
         "nunomaduro/phpinsights": "^1.14"
     },
     "autoload": {
+        "files": [
+            "src/Support/helpers.php"
+        ],
         "psr-4": {
             "Redbeed\\OpenOverlay\\": "src/",
             "Redbeed\\OpenOverlay\\Database\\": "database/"

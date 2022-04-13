@@ -72,18 +72,6 @@ return [
     ],
 
     'bot' => [
-        'commands' => [
-
-            'simple' => [
-                '!hello' => 'Hello %username%! How are you doing?',
-            ],
-
-            'advanced' => [
-                \Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class,
-                \Redbeed\OpenOverlay\ChatBot\Commands\ShoutOutBotCommand::class,
-            ]
-        ],
-
         'schedules' => [
             \Redbeed\OpenOverlay\Console\Scheduling\MadeWithChatBotScheduling::class,
         ]
