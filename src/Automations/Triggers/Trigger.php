@@ -4,9 +4,9 @@ namespace Redbeed\OpenOverlay\Automations\Triggers;
 
 abstract class Trigger
 {
-    static protected string $name;
+    static public string $name;
 
-    static protected string $description;
+    static public string $description;
 
     protected array $options = [];
 

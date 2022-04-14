@@ -7,7 +7,6 @@ use Redbeed\OpenOverlay\Exceptions\AutomationFilterNotValid;
 
 abstract class Filter
 {
-
     static public string $name;
     static public string $description;
 
@@ -32,6 +31,11 @@ abstract class Filter
     public function validate(): bool
     {
         return true;
+    }
+
+    public function settings(): array
+    {
+        return [];
     }
 
     /**

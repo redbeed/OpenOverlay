@@ -11,8 +11,8 @@ use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 
 class ChatMessageContainsWithPatternFilter extends Filter
 {
-    public static string $name = 'Chat message contains';
-    public static string $description = 'Filter chat messages by string  ';
+    public static string $name = 'Chat message check with arguments';
+    public static string $description = 'Filter chat message by string and pattern. If the message contains the string, it will forward the matches of the pattern to your actions.';
 
     private string $needle;
     private bool $caseSensitive;
@@ -94,5 +94,14 @@ class ChatMessageContainsWithPatternFilter extends Filter
                 }
             },
         ], $this->matches());
+    }
+
+    public function settings(): array
+    {
+        return [
+            'needle'        => $this->needle,
+            'regexPatterns' => $this->regexPatterns,
+            'caseSensitive' => $this->caseSensitive,
+        ];
     }
 }

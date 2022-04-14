@@ -2,7 +2,6 @@
 
 namespace Redbeed\OpenOverlay\Automations;
 
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Redbeed\OpenOverlay\Automations\Actions\UseTwitchChatMessage;
 use Redbeed\OpenOverlay\Automations\Actions\UseVariables;
@@ -12,6 +11,8 @@ use Redbeed\OpenOverlay\Automations\Triggers\TwitchChatMessageTrigger;
 
 class AutomationHandler
 {
+    public static string $name = 'Automation Handler';
+    public static string $description = 'Will run filters on trigger and execute actions';
 
     /** @var Trigger */
     private $trigger;

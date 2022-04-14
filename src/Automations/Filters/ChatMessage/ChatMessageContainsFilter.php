@@ -13,8 +13,8 @@ use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 class ChatMessageContainsFilter extends Filter
 {
 
-    public static string $name = 'Chat message contains';
-    public static string $description = 'Filter chat messages by string  ';
+    public static string $name = 'Chat message check';
+    public static string $description = 'Filter chat message by string.';
 
     private string $needle;
     private bool $caseSensitive;
@@ -68,6 +68,14 @@ class ChatMessageContainsFilter extends Filter
                     return '';
                 }
             },
+        ];
+    }
+
+    public function settings(): array
+    {
+        return [
+            'needle'        => $this->needle,
+            'caseSensitive' => $this->caseSensitive,
         ];
     }
 }

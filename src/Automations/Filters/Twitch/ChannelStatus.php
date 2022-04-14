@@ -9,6 +9,9 @@ use Redbeed\OpenOverlay\Support\StreamerOnline;
 class ChannelStatus extends \Redbeed\OpenOverlay\Automations\Filters\Filter
 {
 
+    public static string $name = 'Twitch Channel Status';
+    public static string $description = 'Check if channel is online or offline';
+
     public const IS_ONLINE = 'online';
     public const IS_OFFLINE = 'offline';
 
@@ -55,5 +58,12 @@ class ChannelStatus extends \Redbeed\OpenOverlay\Automations\Filters\Filter
         }
 
         return true;
+    }
+
+    public function settings(): array
+    {
+        return [
+            'onlineStatus' => $this->onlineStatus,
+        ];
     }
 }
