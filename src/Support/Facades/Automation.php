@@ -2,11 +2,11 @@
 
 namespace Redbeed\OpenOverlay\Support\Facades;
 
+use Closure;
 use Illuminate\Support\Facades\Facade;
-use Redbeed\OpenOverlay\Automations\AutomationHandler;
 
 /**
- * @method static void add(string $trigger, string|array $handler)
+ * @method static void add(string $trigger, string|array|Closure $handler)
  */
 class Automation extends Facade
 {

@@ -12,6 +12,10 @@ class TwitchRandomChatBotMessage
     use UseVariables;
     use UseTwitchChatMessage;
 
+    public static string $name = 'Send one of the random chat messages';
+
+    public static string $description = 'Send one of the random chat messages via bot';
+
     private Connection $connection;
 
     /** @var string[] */
@@ -25,7 +29,7 @@ class TwitchRandomChatBotMessage
     public function handle()
     {
         Artisan::queue(SendMessageCommand::class, [
-            'userId'  => $this->getUser()->id,
+            'userId' => $this->getUser()->id,
             '--botId' => $this->getBot()->id,
             'message' => $this->replaceInString(Arr::random($this->messages)),
         ]);

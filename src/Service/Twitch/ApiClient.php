@@ -26,7 +26,7 @@ class ApiClient
             RequestOptions::HEADERS => [
                 'Client-ID' => $clientId,
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $authCode,
+                'Authorization' => 'Bearer '.$authCode,
             ],
         ]);
     }
@@ -41,6 +41,7 @@ class ApiClient
 
     /**
      * @return static
+     *
      * @throws AppTokenMissing
      */
     public function addAppToken()
@@ -53,28 +54,26 @@ class ApiClient
 
         return $this->withOptions([
             RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer ' . $appToken,
+                'Authorization' => 'Bearer '.$appToken,
             ],
         ]);
     }
 
     /**
-     * @param string $appToken
-     *
+     * @param  string  $appToken
      * @return static
      */
     public function withAppToken(string $appToken)
     {
         return $this->setOptions([
             RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer ' . $appToken,
+                'Authorization' => 'Bearer '.$appToken,
             ],
         ]);
     }
 
     /**
-     * @param array $options
-     *
+     * @param  array  $options
      * @return static
      */
     public function withOptions(array $options)
@@ -86,8 +85,7 @@ class ApiClient
     }
 
     /**
-     * @param array $options
-     *
+     * @param  array  $options
      * @return static
      */
     public function setOptions(array $options): self
@@ -99,16 +97,16 @@ class ApiClient
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     *
+     * @param  string  $method
+     * @param  string  $url
      * @return array
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function request(string $method, string $url)
     {
         $response = $this->httpClient->request($method, $url, $this->options);
-        $json = (string)$response->getBody();
+        $json = (string) $response->getBody();
 
         return json_decode($json, true);
     }

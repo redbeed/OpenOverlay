@@ -24,7 +24,6 @@ abstract class RuntimeCommand extends Command
     {
         $this->loop->stop();
 
-        echo "Chatbot Service will shutdown." . PHP_EOL;
+        echo 'Chatbot Service will shutdown.'.PHP_EOL;
     }
-
 }

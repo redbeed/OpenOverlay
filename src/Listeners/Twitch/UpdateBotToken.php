@@ -20,7 +20,7 @@ class UpdateBotToken
             $client = AuthClient::http();
             $response = $client->refreshToken($event->botModel->service_refresh_token);
         } catch (\Exception $exception) {
-            Log::error("Bot Connection deleted");
+            Log::error('Bot Connection deleted');
             Log::error($exception);
 
             return;

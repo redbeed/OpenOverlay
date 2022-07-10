@@ -19,6 +19,7 @@ class ChatMessage
     public array $possibleEmotes;
 
     public ?\Illuminate\Foundation\Auth\User $channelUser;
+
     public ?BotConnection $bot;
 
     public function __construct(string $channel, string $username, string $message, ?BotConnection $bot = null)
@@ -51,16 +52,17 @@ class ChatMessage
         $emoteList = collect($this->possibleEmotes)
             ->map(function (Emote $emote) use ($emoteSize) {
                 $name = htmlspecialchars_decode($emote->name);
-                $regex = '/' . preg_quote($name, '/') . '(\s|$)/';
+                $regex = '/'.preg_quote($name, '/').'(\s|$)/';
 
                 if (@preg_match($regex, null) === false) {
-                    echo "Emote Regex '" . $regex . "' is invalid \r\n";
+                    echo "Emote Regex '".$regex."' is invalid \r\n";
+
                     return null;
                 }
 
                 return [
-                    'name'  => $regex,
-                    'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . Str::slug($emote->name) . '"> ',
+                    'name' => $regex,
+                    'image' => '<img src="'.$emote->image($emoteSize).'" class="twitch-emote" alt="'.Str::slug($emote->name).'"> ',
                 ];
             });
 

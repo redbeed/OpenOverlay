@@ -43,10 +43,9 @@ trait UseVariables
     {
         $replacements = [];
         foreach ($this->variables as $key => $value) {
-            $keyPattern = ':' . $key;
+            $keyPattern = ':'.$key;
 
             if (Str::contains($string, $keyPattern)) {
-
                 if ($this->variables[$key] instanceof \Closure) {
                     // If the variable is a closure, we will execute it and replace the key with the result.
                     $this->variables[$key] = $this->variables[$key]();

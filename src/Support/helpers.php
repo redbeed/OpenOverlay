@@ -1,10 +1,10 @@
 <?php
 
-if (!function_exists('automation')) {
+if (! function_exists('automation')) {
     /**
      * Trigger a automation
      *
-     * @param string|object $trigger
+     * @param  string|object  $trigger
      * @return array|string|null
      */
     function automation(...$args)

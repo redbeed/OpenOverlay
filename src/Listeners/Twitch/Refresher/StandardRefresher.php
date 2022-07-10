@@ -25,7 +25,7 @@ class StandardRefresher extends Refresher implements ShouldQueue
         if (parent::saveSubscriber()) {
             try {
                 $this->refreshSubscriber($event->twitchConnection);
-            }catch (ClientException $e) {
+            } catch (ClientException $e) {
                 // ignore exception as it is not critical
                 // user auth token is not valid
                 report($e);

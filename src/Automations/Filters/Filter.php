@@ -7,8 +7,9 @@ use Redbeed\OpenOverlay\Exceptions\AutomationFilterNotValid;
 
 abstract class Filter
 {
-    static public string $name;
-    static public string $description;
+    public static string $name;
+
+    public static string $description;
 
     /**
      * @var Trigger|mixed
@@ -16,8 +17,9 @@ abstract class Filter
     protected $trigger;
 
     /**
-     * @param Trigger $trigger
+     * @param  Trigger  $trigger
      * @return bool
+     *
      * @throws AutomationFilterNotValid
      */
     public function handle(mixed $trigger): bool
@@ -43,8 +45,8 @@ abstract class Filter
      */
     public function validTrigger()
     {
-        if (!($this->trigger instanceof Trigger)) {
-            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of Trigger but is ' . get_class($this->trigger));
+        if (! ($this->trigger instanceof Trigger)) {
+            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of Trigger but is '.get_class($this->trigger));
         }
     }
 

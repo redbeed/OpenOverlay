@@ -12,9 +12,11 @@ use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 class ChatMessageContainsWithPatternFilter extends Filter
 {
     public static string $name = 'Chat message check with arguments';
+
     public static string $description = 'Filter chat message by string and pattern. If the message contains the string, it will forward the matches of the pattern to your actions.';
 
     private string $needle;
+
     private bool $caseSensitive;
 
     /** @var string[] */
@@ -24,7 +26,6 @@ class ChatMessageContainsWithPatternFilter extends Filter
      * @var TwitchChatMessageTrigger
      */
     protected $trigger;
-
 
     public function __construct(string $needle, array $regexPatterns, bool $needleCaseSensitive = false)
     {
@@ -38,12 +39,12 @@ class ChatMessageContainsWithPatternFilter extends Filter
         $message = $this->trigger->message->message;
         $needle = $this->needle;
 
-        if (!$this->caseSensitive) {
+        if (! $this->caseSensitive) {
             $message = Str::lower($message);
             $needle = Str::lower($needle);
         }
 
-        if (!Str::contains($message, $needle)) {
+        if (! Str::contains($message, $needle)) {
             return false;
         }
 
@@ -54,12 +55,12 @@ class ChatMessageContainsWithPatternFilter extends Filter
     {
         $regex = collect($this->regexPatterns)
             ->mapWithKeys(function ($regex, $key) {
-                return [$key => '(?<' . $key . '>' . $regex . ')'];
+                return [$key => '(?<'.$key.'>'.$regex.')'];
             })
             ->prepend($this->needle)
             ->implode(' ');
 
-        return '/' . $regex . '/';
+        return '/'.$regex.'/';
     }
 
     private function matches(): array
@@ -67,7 +68,7 @@ class ChatMessageContainsWithPatternFilter extends Filter
         $matches = [];
         preg_match($this->regex(), $this->trigger->message->message, $matches);
 
-        return array_filter($matches, "is_string", ARRAY_FILTER_USE_KEY);
+        return array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
     }
 
     /**
@@ -77,8 +78,8 @@ class ChatMessageContainsWithPatternFilter extends Filter
     {
         parent::validTrigger();
 
-        if (!($this->trigger instanceof TwitchChatMessageTrigger)) {
-            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of TwitchChatMessageTrigger but is ' . get_class($this->trigger));
+        if (! ($this->trigger instanceof TwitchChatMessageTrigger)) {
+            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of TwitchChatMessageTrigger but is '.get_class($this->trigger));
         }
     }
 
@@ -86,7 +87,7 @@ class ChatMessageContainsWithPatternFilter extends Filter
     {
         return array_merge_recursive([
             'username' => $this->trigger->message->username,
-            'game'     => function () {
+            'game' => function () {
                 try {
                     return (new UsersClient())->lastGame($this->trigger->message->username);
                 } catch (ClientException) {
@@ -99,7 +100,7 @@ class ChatMessageContainsWithPatternFilter extends Filter
     public function settings(): array
     {
         return [
-            'needle'        => $this->needle,
+            'needle' => $this->needle,
             'regexPatterns' => $this->regexPatterns,
             'caseSensitive' => $this->caseSensitive,
         ];

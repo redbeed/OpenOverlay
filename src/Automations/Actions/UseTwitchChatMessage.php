@@ -11,6 +11,7 @@ trait UseTwitchChatMessage
     private ChatMessage $chatMessage;
 
     private ?BotConnection $botConnection = null;
+
     private ?User $user = null;
 
     public function setChatMessage(ChatMessage $chatMessage): void

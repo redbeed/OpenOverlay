@@ -16,6 +16,7 @@ class EventSubClient extends ApiClient
 
     /**
      * @return EventSubClient
+     *
      * @throws AppTokenMissing
      */
     public static function http()
@@ -28,7 +29,7 @@ class EventSubClient extends ApiClient
 
         return (new self())->setOptions([
             RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer ' . $appToken,
+                'Authorization' => 'Bearer '.$appToken,
             ],
         ]);
     }
@@ -38,14 +39,13 @@ class EventSubClient extends ApiClient
         string $messageId,
         string $messageTimestamp,
         string $requestBody
-    ): bool
-    {
+    ): bool {
         if (empty($messageId) || empty($messageSignature) || empty($messageTimestamp) || empty($requestBody)) {
             throw new WebhookTwitchSignatureMissing('Twitch Eventsub Header infomation missing');
         }
 
-        $message = $messageId . $messageTimestamp . $requestBody;
-        $hash = 'sha256=' . hash_hmac('sha256', $message, config('openoverlay.webhook.twitch.secret'));
+        $message = $messageId.$messageTimestamp.$requestBody;
+        $hash = 'sha256='.hash_hmac('sha256', $message, config('openoverlay.webhook.twitch.secret'));
 
         return $hash === $messageSignature;
     }
@@ -70,7 +70,7 @@ class EventSubClient extends ApiClient
                     'condition' => $condition,
                     'transport' => [
                         'method' => 'webhook',
-                        'callback' => $webhookCallback . '?' . time(),
+                        'callback' => $webhookCallback.'?'.time(),
                         'secret' => $secret,
                     ],
                 ],
@@ -84,16 +84,15 @@ class EventSubClient extends ApiClient
             ->subscriptions()
             ->filter(function ($subscription) use ($broadcasterUserId) {
                 /** @var EventSubscription $subscription */
-
                 if (empty($subscription->condition)) {
                     return false;
                 }
 
-                if (!empty($subscription->condition['broadcaster_user_id']) && $subscription->condition['broadcaster_user_id'] !== $broadcasterUserId) {
+                if (! empty($subscription->condition['broadcaster_user_id']) && $subscription->condition['broadcaster_user_id'] !== $broadcasterUserId) {
                     return false;
                 }
 
-                if (!empty($subscription->condition['to_broadcaster_user_id']) && $subscription->condition['to_broadcaster_user_id'] !== $broadcasterUserId) {
+                if (! empty($subscription->condition['to_broadcaster_user_id']) && $subscription->condition['to_broadcaster_user_id'] !== $broadcasterUserId) {
                     return false;
                 }
 

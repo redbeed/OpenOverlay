@@ -3,7 +3,6 @@
 namespace Redbeed\OpenOverlay\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubscription;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
@@ -43,7 +42,7 @@ class EventSubListingCommand extends Command
         $subscriptions = $eventSubClient->subscriptions();
 
         $this->subscriptionsTable($subscriptions);
-        $this->info('Total EventSub subscriptions: ' . $subscriptions->count());
+        $this->info('Total EventSub subscriptions: '.$subscriptions->count());
     }
 
     protected function subscriptionsTable(Collection $subscriptions): void
@@ -52,10 +51,10 @@ class EventSubListingCommand extends Command
             /** @var EventSubscription $subscription */
 
             return [
-                'id'         => $subscription->id,
-                'status'     => $subscription->status,
-                'type'       => $subscription->type,
-                'condition'  => json_encode($subscription->condition),
+                'id' => $subscription->id,
+                'status' => $subscription->status,
+                'type' => $subscription->type,
+                'condition' => json_encode($subscription->condition),
                 'created_at' => $subscription->createdAt->toDateTimeLocalString(),
             ];
         });

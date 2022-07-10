@@ -2,6 +2,7 @@
 
 namespace Redbeed\OpenOverlay\Events\Twitch;
 
+use function config;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -11,7 +12,6 @@ use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Support\ViewerInChat;
-use function config;
 
 class ChatMessageReceived implements ShouldBroadcastNow
 {
@@ -44,7 +44,7 @@ class ChatMessageReceived implements ShouldBroadcastNow
 
     public function broadcastOn(): Channel
     {
-        return new Channel('twitch.' . $this->twitchUser->service_user_id);
+        return new Channel('twitch.'.$this->twitchUser->service_user_id);
     }
 
     public function broadcastAs(): string

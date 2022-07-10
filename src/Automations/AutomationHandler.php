@@ -12,6 +12,7 @@ use Redbeed\OpenOverlay\Automations\Triggers\TwitchChatMessageTrigger;
 class AutomationHandler
 {
     public static string $name = 'Automation Handler';
+
     public static string $description = 'Will run filters on trigger and execute actions';
 
     /** @var Trigger */
@@ -45,6 +46,8 @@ class AutomationHandler
         foreach ($this->filters() as $filter) {
             $response = $filter->handle($this->trigger);
 
+            ray('did i passed? ', $response, $filter->settings());
+
             if ($response === false) {
                 // Filter failed stop the automation
                 return;
@@ -72,13 +75,13 @@ class AutomationHandler
         }
     }
 
-    #[ArrayShape(['trigger' => "string", 'options' => "array"])]
+    #[ArrayShape(['trigger' => 'string', 'options' => 'array'])]
     public static function triggerConfig(string $triggerClass, array $options = [])
     {
         return ['trigger' => $triggerClass, 'options' => $options];
     }
 
-    #[ArrayShape(['action' => "string", 'options' => "array"])]
+    #[ArrayShape(['action' => 'string', 'options' => 'array'])]
     public static function actionConfig(string $actionClass, array $options = [])
     {
         return ['action' => $actionClass, 'options' => $options];

@@ -7,7 +7,6 @@ use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 
 abstract class EventListener implements ShouldQueue
 {
-
     protected function eventType(): string
     {
         return 'event.type'; // https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types
@@ -26,7 +25,6 @@ abstract class EventListener implements ShouldQueue
 
         $this->handleEvent($event);
     }
-
 
     abstract public function handleEvent(EventReceived $event): void;
 }

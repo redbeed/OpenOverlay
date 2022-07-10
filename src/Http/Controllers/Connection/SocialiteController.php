@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Redbeed\OpenOverlay\Http\Controllers\Connection;
 
 use Laravel\Socialite\Contracts\Provider;
@@ -18,7 +17,8 @@ abstract class SocialiteController
             ->setScopes($this->scopes());
     }
 
-    protected function scopes(): array {
+    protected function scopes(): array
+    {
         return config('openoverlay.service.twitch.scopes');
     }
 
@@ -26,11 +26,10 @@ abstract class SocialiteController
     {
         $callbackUrl = $this->callbackUrl();
 
-        if (!empty($callbackUrl)) {
+        if (! empty($callbackUrl)) {
 
             /** @var RedirectResponse $redirect */
             $redirect = $this->socialite()->redirect();
-
 
             $redirectUrl = Url::fromString($redirect->getTargetUrl());
             $redirectUrl = $redirectUrl->withQueryParameter('redirect_uri', $callbackUrl);

@@ -4,8 +4,8 @@ namespace Redbeed\OpenOverlay\Console;
 
 use Illuminate\Support\ServiceProvider;
 use Redbeed\OpenOverlay\Console\Commands\ChatBot\RestartServerCommand;
-use Redbeed\OpenOverlay\Console\Commands\ChatBot\StartCommand;
 use Redbeed\OpenOverlay\Console\Commands\ChatBot\SendMessageCommand;
+use Redbeed\OpenOverlay\Console\Commands\ChatBot\StartCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventBroadcastFaker;
 use Redbeed\OpenOverlay\Console\Commands\EventSubDeleteCommand;
 use Redbeed\OpenOverlay\Console\Commands\EventSubListingCommand;
@@ -15,7 +15,6 @@ use Redbeed\OpenOverlay\Console\Commands\Twitch\RefresherCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
         $this->registerGlobalCommands();

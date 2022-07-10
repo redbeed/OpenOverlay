@@ -26,7 +26,6 @@ class RestartServerCommand extends Command
 
     public function handle(): void
     {
-
         Cache::forever(
             StartCommand::RESTART_CACHE_KEY,
             $this->currentTime()

@@ -23,12 +23,12 @@ class AutoShoutOutRaid implements ShouldQueue
         $connection = Connection::where('service_user_id', $event->event->event_user_id)
             ->first();
 
-        if (!$connection) {
+        if (! $connection) {
             return;
         }
 
         $chatMessage = config(
-            'openoverlay.modules' . AutoShoutOutRaid::class . 'message',
+            'openoverlay.modules'.AutoShoutOutRaid::class.'message',
             'Follow :username over at :twitchUrl. They were last playing :gameName'
         );
 
@@ -40,7 +40,7 @@ class AutoShoutOutRaid implements ShouldQueue
             $channels = $channelClient->get($eventData['from_broadcaster_user_id']);
             $channel = head($channels['data']);
 
-            if (!empty($channel['game_id'])) {
+            if (! empty($channel['game_id'])) {
                 $gameName = $channel['game_name'];
             }
         } catch (ClientException $exception) {
@@ -52,7 +52,7 @@ class AutoShoutOutRaid implements ShouldQueue
             'userId' => $connection->user->id,
             'message' => __($chatMessage, [
                 'username' => $eventData['from_broadcaster_user_name'],
-                'twitchUrl' => 'https://www.twitch.tv/' . $eventData['from_broadcaster_user_login'],
+                'twitchUrl' => 'https://www.twitch.tv/'.$eventData['from_broadcaster_user_login'],
                 'gameName' => $gameName,
             ]),
         ]);

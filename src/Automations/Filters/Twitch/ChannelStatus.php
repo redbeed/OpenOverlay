@@ -2,17 +2,17 @@
 
 namespace Redbeed\OpenOverlay\Automations\Filters\Twitch;
 
-use Illuminate\Support\Facades\Log;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Support\StreamerOnline;
 
 class ChannelStatus extends \Redbeed\OpenOverlay\Automations\Filters\Filter
 {
-
     public static string $name = 'Twitch Channel Status';
+
     public static string $description = 'Check if channel is online or offline';
 
     public const IS_ONLINE = 'online';
+
     public const IS_OFFLINE = 'offline';
 
     private Connection $connection;
@@ -27,6 +27,7 @@ class ChannelStatus extends \Redbeed\OpenOverlay\Automations\Filters\Filter
     private function setOnlineStatus(string $status): self
     {
         $this->onlineStatus = $status;
+
         return $this;
     }
 
@@ -53,7 +54,7 @@ class ChannelStatus extends \Redbeed\OpenOverlay\Automations\Filters\Filter
 
     public function validate(): bool
     {
-        if (!$this->validateOnlineStatus()) {
+        if (! $this->validateOnlineStatus()) {
             return false;
         }
 

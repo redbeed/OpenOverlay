@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Redbeed\OpenOverlay\Console\Commands\BroadcastFaker;
-
 
 use Illuminate\Support\Arr;
 
 class Fake
 {
-
     protected $eventData = [];
 
     public static function value(): array
@@ -26,7 +23,8 @@ class Fake
         return $this->randomizeEventData();
     }
 
-    public static function fakeUsername(): string {
+    public static function fakeUsername(): string
+    {
         return Arr::random([
             'Chris',
             'redbeed',
@@ -34,7 +32,7 @@ class Fake
             'Lethinium',
             'kekub',
             'Laravel_user',
-            'Twitch_user'
+            'Twitch_user',
         ]);
     }
 }

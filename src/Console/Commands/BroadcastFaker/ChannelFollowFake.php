@@ -2,14 +2,13 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands\BroadcastFaker;
 
-class ChannelFollowFake  extends Fake
+class ChannelFollowFake extends Fake
 {
-
     protected $eventData = [
-        "user_id" => "1234",
-        "user_name" => "cool_user",
-        "broadcaster_user_id" => "1337",
-        "broadcaster_user_name" => "cooler_user",
+        'user_id' => '1234',
+        'user_name' => 'cool_user',
+        'broadcaster_user_id' => '1337',
+        'broadcaster_user_name' => 'cooler_user',
     ];
 
     protected function randomizeEventData(): array

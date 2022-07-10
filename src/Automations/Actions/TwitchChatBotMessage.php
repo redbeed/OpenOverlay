@@ -11,7 +11,12 @@ class TwitchChatBotMessage
     use UseVariables;
     use UseTwitchChatMessage;
 
+    public static string $name = 'Send chat message';
+
+    public static string $description = 'Send chat message via bot';
+
     private Connection $connection;
+
     private string $message;
 
     public function __construct(string $message)
@@ -22,7 +27,7 @@ class TwitchChatBotMessage
     public function handle()
     {
         Artisan::queue(SendMessageCommand::class, [
-            'userId'  => $this->getUser()->id,
+            'userId' => $this->getUser()->id,
             '--botId' => $this->getBot()->id,
             'message' => $this->replaceInString($this->message),
         ]);

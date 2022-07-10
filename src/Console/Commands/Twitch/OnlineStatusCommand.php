@@ -10,7 +10,6 @@ use Redbeed\OpenOverlay\Support\StreamerOnline;
 
 class OnlineStatusCommand extends Command
 {
-
     protected $signature = 'overlay:twitch:online-status {twitchUserId?} {--all=false}';
 
     protected $description = 'Checks online status of twitch user';
@@ -19,7 +18,7 @@ class OnlineStatusCommand extends Command
     {
         $connections = Connection::where('service', 'twitch');
 
-        if (!$this->option('all') && $this->argument('twitchUserId')) {
+        if (! $this->option('all') && $this->argument('twitchUserId')) {
             $connections = $connections->where('service_user_id', $this->argument('twitchUserId'));
         }
 
@@ -36,13 +35,12 @@ class OnlineStatusCommand extends Command
                     Carbon::parse($stream['created_at'] ?? null, 'UTC')
                 );
 
-                $this->info('Streamer ' . $connection->service_username . ' is online');
+                $this->info('Streamer '.$connection->service_username.' is online');
                 continue;
             }
 
-            $this->info('Streamer ' . $connection->service_username . ' is offline');
+            $this->info('Streamer '.$connection->service_username.' is offline');
             StreamerOnline::setOffline($connection->service_user_id);
         }
-
     }
 }

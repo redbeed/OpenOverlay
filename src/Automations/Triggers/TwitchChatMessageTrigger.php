@@ -7,9 +7,9 @@ use Redbeed\OpenOverlay\ChatBot\Twitch\ChatMessage;
 
 class TwitchChatMessageTrigger extends Trigger
 {
-    static public string $name = 'Twitch Chat Message';
+    public static string $name = 'Twitch Chat Message';
 
-    static public string $description = 'Trigger when Twitch chat message is received';
+    public static string $description = 'Trigger when Twitch chat message is received';
 
     public ChatMessage $message;
 

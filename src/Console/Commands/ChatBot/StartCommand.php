@@ -3,14 +3,13 @@
 namespace Redbeed\OpenOverlay\Console\Commands\ChatBot;
 
 use Illuminate\Support\Facades\Cache;
+use function Ratchet\Client\connect;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
 use Redbeed\OpenOverlay\Models\BotConnection;
-use function Ratchet\Client\connect;
 
 class StartCommand extends RuntimeCommand
 {
-
     const RESTART_CACHE_KEY = 'redbeed:open-overlay:chat-bot:restart';
 
     /**
@@ -28,12 +27,9 @@ class StartCommand extends RuntimeCommand
     protected $description = 'Chat Bot worker (loop service)';
 
     /**
-     *
      * Timestamp of the last restart
-     *
      */
     private int $lastRestart;
-
 
     public function handle(): void
     {
@@ -74,7 +70,6 @@ class StartCommand extends RuntimeCommand
                 $conn->on('close', function ($code = null, $reason = null) {
                     echo "Connection closed ({$code} - {$reason})";
                 });
-
             }, function ($e) {
                 echo "Could not connect: {$e->getMessage()}\n";
             });

@@ -20,8 +20,8 @@ class FrequencyFilter extends Filter
     {
         parent::validTrigger();
 
-        if (!($this->trigger instanceof ScheduleTrigger)) {
-            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of ScheduleTrigger but is ' . get_class($this->trigger));
+        if (! ($this->trigger instanceof ScheduleTrigger)) {
+            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of ScheduleTrigger but is '.get_class($this->trigger));
         }
     }
 

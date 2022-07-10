@@ -2,6 +2,7 @@
 
 namespace Redbeed\OpenOverlay\Listeners\Twitch\Refresher;
 
+use Exception;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Redbeed\OpenOverlay\Exceptions\WrongConnectionTypeException;
@@ -27,7 +28,13 @@ class LoginRefresher extends Refresher implements ShouldQueue
         }
 
         if (parent::saveSubscriber()) {
-            $this->refreshSubscriber($twitchConnection);
+            try {
+                $this->refreshSubscriber($twitchConnection);
+            } catch (Exception $e) {
+                // ignore exception as it is not critical
+                // user auth token is not valid
+                report($e);
+            }
         }
     }
 }

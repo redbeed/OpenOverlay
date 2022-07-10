@@ -12,11 +12,12 @@ use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 
 class ChatMessageContainsFilter extends Filter
 {
-
     public static string $name = 'Chat message check';
+
     public static string $description = 'Filter chat message by string.';
 
     private string $needle;
+
     private bool $caseSensitive;
 
     /**
@@ -36,7 +37,7 @@ class ChatMessageContainsFilter extends Filter
         $message = $this->trigger->message->message;
         $needle = $this->needle;
 
-        if (!$this->caseSensitive) {
+        if (! $this->caseSensitive) {
             $message = Str::lower($message);
             $needle = Str::lower($needle);
         }
@@ -51,17 +52,17 @@ class ChatMessageContainsFilter extends Filter
     {
         parent::validTrigger();
 
-        if (!($this->trigger instanceof TwitchChatMessageTrigger)) {
-            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of TwitchChatMessageTrigger but is ' . get_class($this->trigger));
+        if (! ($this->trigger instanceof TwitchChatMessageTrigger)) {
+            throw new AutomationFilterNotValid('Trigger is not valid. Trigger must be instance of TwitchChatMessageTrigger but is '.get_class($this->trigger));
         }
     }
 
     public function variables(): array
     {
         return [
-            'username'  => $this->trigger->message->username,
-            'twitchUrl' => 'https://www.twitch.tv/' . $this->trigger->message->username,
-            'game'      => function () {
+            'username' => $this->trigger->message->username,
+            'twitchUrl' => 'https://www.twitch.tv/'.$this->trigger->message->username,
+            'game' => function () {
                 try {
                     return (new UsersClient())->lastGame($this->trigger->message->username);
                 } catch (ClientException) {
@@ -74,7 +75,7 @@ class ChatMessageContainsFilter extends Filter
     public function settings(): array
     {
         return [
-            'needle'        => $this->needle,
+            'needle' => $this->needle,
             'caseSensitive' => $this->caseSensitive,
         ];
     }

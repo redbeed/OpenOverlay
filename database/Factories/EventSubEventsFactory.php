@@ -7,11 +7,10 @@ use Redbeed\OpenOverlay\Models\Twitch\EventSubEvents;
 
 class EventSubEventsFactory extends Factory
 {
-
     protected $model = EventSubEvents::class;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function definition()
     {

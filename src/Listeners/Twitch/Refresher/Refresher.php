@@ -3,6 +3,7 @@
 namespace Redbeed\OpenOverlay\Listeners\Twitch\Refresher;
 
 use Carbon\Carbon;
+use function head;
 use Illuminate\Support\Arr;
 use Redbeed\OpenOverlay\Exceptions\WrongConnectionTypeException;
 use Redbeed\OpenOverlay\Models\Twitch\UserFollowers;
@@ -10,7 +11,6 @@ use Redbeed\OpenOverlay\Models\Twitch\UserSubscriber;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Service\Twitch\SubscriptionsClient;
 use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
-use function head;
 
 abstract class Refresher
 {
@@ -19,7 +19,7 @@ abstract class Refresher
         return config('openoverlay.service.twitch.save.follower', false) === true;
     }
 
-    public static  function saveSubscriber(): bool
+    public static function saveSubscriber(): bool
     {
         return config('openoverlay.service.twitch.save.subscriber', false) === true;
     }
@@ -49,11 +49,11 @@ abstract class Refresher
 
             if ($followerModal === null) {
                 UserFollowers::create([
-                    'twitch_user_id'    => $twitchConnection->service_user_id,
-                    'follower_user_id'  => $followerData['from_id'],
+                    'twitch_user_id' => $twitchConnection->service_user_id,
+                    'follower_user_id' => $followerData['from_id'],
                     'follower_username' => $followerData['from_name'],
-                    'followed_at'       => Carbon::parse($followerData['followed_at']),
-                    'deleted_at'        => null,
+                    'followed_at' => Carbon::parse($followerData['followed_at']),
+                    'deleted_at' => null,
                 ]);
 
                 continue;
@@ -107,16 +107,16 @@ abstract class Refresher
                 UserSubscriber::create([
                     'twitch_user_id' => $twitchConnection->service_user_id,
 
-                    'subscriber_user_id'    => $subscriberData['user_id'],
-                    'subscriber_username'   => $subscriberData['user_name'],
+                    'subscriber_user_id' => $subscriberData['user_id'],
+                    'subscriber_username' => $subscriberData['user_name'],
                     'subscriber_login_name' => $subscriberData['user_login'],
 
-                    'tier'      => $subscriberData['tier'],
+                    'tier' => $subscriberData['tier'],
                     'tier_name' => $subscriberData['plan_name'],
 
-                    'is_gift'           => $subscriberData['is_gift'],
-                    'gifter_user_id'    => $subscriberData['gifter_id'],
-                    'gifter_username'   => $subscriberData['gifter_name'],
+                    'is_gift' => $subscriberData['is_gift'],
+                    'gifter_user_id' => $subscriberData['gifter_id'],
+                    'gifter_username' => $subscriberData['gifter_name'],
                     'gifter_login_name' => $subscriberData['gifter_login'],
                 ]);
 
@@ -149,7 +149,7 @@ abstract class Refresher
     private function twitchUser(string $broadcasterId): array
     {
         $userClient = new UsersClient();
+
         return head(Arr::get($userClient->byId($broadcasterId), 'data', []));
     }
-
 }

@@ -2,20 +2,18 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
-use Exception;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Redbeed\OpenOverlay\Exceptions\TwitchEmoteSetIdException;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 
 class ChatEmotesClient extends ApiClient
 {
-
     const MAX_SET_ID = 25;
 
     /**
-     * @param string $broadcasterId
+     * @param  string  $broadcasterId
      * @return Emote[]
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Redbeed\OpenOverlay\Exceptions\AppTokenMissing
      */
@@ -38,8 +36,9 @@ class ChatEmotesClient extends ApiClient
     }
 
     /**
-     * @param string $broadcasterId
+     * @param  string  $broadcasterId
      * @return Emote[]
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Redbeed\OpenOverlay\Exceptions\AppTokenMissing
      */
@@ -57,8 +56,9 @@ class ChatEmotesClient extends ApiClient
     }
 
     /**
-     * @param int $setId
+     * @param  int  $setId
      * @return array
+     *
      * @throws TwitchEmoteSetIdException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Redbeed\OpenOverlay\Exceptions\AppTokenMissing
@@ -66,7 +66,7 @@ class ChatEmotesClient extends ApiClient
     public function set(int $setId): array
     {
         if ($setId > ChatEmotesClient::MAX_SET_ID || $setId < 1) {
-            throw new TwitchEmoteSetIdException('Set Id minimum: 1 / maximum: ' . ChatEmotesClient::MAX_SET_ID);
+            throw new TwitchEmoteSetIdException('Set Id minimum: 1 / maximum: '.ChatEmotesClient::MAX_SET_ID);
         }
 
         $json = $this
@@ -91,7 +91,6 @@ class ChatEmotesClient extends ApiClient
         $bulkSize = 10;
 
         foreach (range(1, (ChatEmotesClient::MAX_SET_ID / $bulkSize)) as $bulk) {
-
             $to = min(($bulkSize * $bulk), ChatEmotesClient::MAX_SET_ID);
             $from = ($bulkSize * $bulk) - 9;
 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
 use Illuminate\Support\Facades\Log;
@@ -33,12 +32,11 @@ class ConnectionHandler
     /** @var array */
     private $emoteSets = [];
 
-
     public function __construct(WebSocket $connection)
     {
         $this->connection = $connection;
 
-        $this->connection->on('message', function ($message) use ($connection) {
+        $this->connection->on('message', function ($message) {
             $this->basicMessageHandler($message);
         });
     }
@@ -71,10 +69,11 @@ class ConnectionHandler
 
         // if this message contains "Login authentication" reset bot connection
         if (str_contains($message, 'NOTICE * :Login authentication failed')) {
-            $this->write("LOGIN | " . $message);
+            $this->write('LOGIN | '.$message);
             event(new BotTokenExpires($this->bot));
 
             $this->connection->close();
+
             return;
         }
 
@@ -92,13 +91,13 @@ class ConnectionHandler
             return;
         }
 
-        $this->write("UNKOWN | " . $message . PHP_EOL, '');
+        $this->write('UNKOWN | '.$message.PHP_EOL, '');
     }
 
     public function pingReceived(string $message): void
     {
         $this->send('PONG :tmi.twitch.tv');
-        $this->write("PING PONG done");
+        $this->write('PING PONG done');
     }
 
     public function joinMessageReceived(string $message): void
@@ -106,7 +105,7 @@ class ConnectionHandler
         try {
             preg_match("/:(.*)\!.*#(.*)/", $message, $matches);
 
-            $this->write("BOT (" . $matches[1] . ") joined " . $matches[2]);
+            $this->write('BOT ('.$matches[1].') joined '.$matches[2]);
 
             $channelName = trim(strtolower($matches[2]));
 
@@ -114,9 +113,8 @@ class ConnectionHandler
             $this->runChannelQueue($channelName);
 
             $this->afterJoinCallBacks($channelName);
-
         } catch (\Exception $exception) {
-            $this->write($exception->getMessage() . ' ' . $exception->getLine() . PHP_EOL, 'ERROR');
+            $this->write($exception->getMessage().' '.$exception->getLine().PHP_EOL, 'ERROR');
         }
     }
 
@@ -125,10 +123,8 @@ class ConnectionHandler
         $channelName = strtolower($channelName);
 
         if (isset($this->joinedCallBack[$channelName])) {
-
-            $this->write('CALL CALLBACK FOR ' . $channelName);
+            $this->write('CALL CALLBACK FOR '.$channelName);
             $this->joinedCallBack[$channelName]();
-
         }
     }
 
@@ -137,7 +133,7 @@ class ConnectionHandler
         $channelName = strtolower($channelName);
 
         $this->joinedCallBack[$channelName] = $callback;
-        $this->write('Callback added for ' . $channelName);
+        $this->write('Callback added for '.$channelName);
 
         // channel already joined
         if (in_array($channelName, $this->joinedChannel)) {
@@ -155,13 +151,13 @@ class ConnectionHandler
 
         $model->possibleEmotes = $this->emoteSets[$model->channel] ?? [];
 
-        $this->write($model->channel . ' | ' . $model->username . ': ' . $model->message, 'Twitch');
+        $this->write($model->channel.' | '.$model->username.': '.$model->message, 'Twitch');
 
         try {
             event(new ChatMessageReceived($model));
         } catch (\Exception $exception) {
             Log::error($exception);
-            $this->write("  -> EVENT ERROR: " . $exception->getMessage(), 'ERROR');
+            $this->write('  -> EVENT ERROR: '.$exception->getMessage(), 'ERROR');
         }
     }
 
@@ -169,15 +165,14 @@ class ConnectionHandler
     {
         $this->bot = $bot;
 
-        $this->send('PASS oauth:' . $this->bot->service_token);
-        $this->send('NICK ' . strtolower($this->bot->bot_username));
+        $this->send('PASS oauth:'.$this->bot->service_token);
+        $this->send('NICK '.strtolower($this->bot->bot_username));
     }
 
     public function send(string $message): void
     {
         $this->connection->send($message);
     }
-
 
     public function joinChannel(Connection $channel): void
     {
@@ -186,8 +181,8 @@ class ConnectionHandler
         $this->channelQueue[$channelName] = [];
         $this->loadEmotes($channel);
 
-        $this->send('JOIN #' . strtolower($channelName));
-        $this->write('JOIN #' . strtolower($channelName));
+        $this->send('JOIN #'.strtolower($channelName));
+        $this->write('JOIN #'.strtolower($channelName));
     }
 
     private function loadEmotes(Connection $channel)
@@ -205,7 +200,7 @@ class ConnectionHandler
     {
         $channelName = trim(strtolower($channelName));
 
-        if (!empty($this->channelQueue[$channelName])) {
+        if (! empty($this->channelQueue[$channelName])) {
             foreach ($this->channelQueue[$channelName] as $item) {
                 $this->send($item);
             }
@@ -217,10 +212,10 @@ class ConnectionHandler
     public function sendChatMessage(string $channelName, string $message): void
     {
         $lowerChannelName = strtolower($channelName);
-        $message = 'PRIVMSG #' . $lowerChannelName . ' :' . $message . PHP_EOL;
+        $message = 'PRIVMSG #'.$lowerChannelName.' :'.$message.PHP_EOL;
 
         // send message after channel joined
-        if (!in_array($lowerChannelName, $this->joinedChannel)) {
+        if (! in_array($lowerChannelName, $this->joinedChannel)) {
             $this->channelQueue[$lowerChannelName][] = $message;
 
             return;
@@ -232,8 +227,7 @@ class ConnectionHandler
 
     protected function write(string $output, string $title = 'OpenOverlay', $newLine = true)
     {
-        $title = !empty($title) ? '[' . $title . ']' : '';
-        echo trim($title . ' ' . $output) . ($newLine ? PHP_EOL : '');
+        $title = ! empty($title) ? '['.$title.']' : '';
+        echo trim($title.' '.$output).($newLine ? PHP_EOL : '');
     }
-
 }

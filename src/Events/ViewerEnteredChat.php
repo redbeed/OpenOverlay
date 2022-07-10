@@ -34,6 +34,6 @@ class ViewerEnteredChat implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new Channel('twitch.' . $this->streamer->service_user_id);
+        return new Channel('twitch.'.$this->streamer->service_user_id);
     }
 }
