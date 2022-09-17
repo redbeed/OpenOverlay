@@ -88,10 +88,9 @@ class EventSubDeleteCommand extends EventSubListingCommand
             $this->subscriptionsTable($subscriptions);
         }
 
-        $this->info($subscriptionsCount . ' subscriptions matching your options');
+        $this->info($subscriptionsCount.' subscriptions matching your options');
 
         if ($this->confirm('Do you wish to delete them?')) {
-
             $deleteProgress = $this->output->createProgressBar($subscriptionsCount);
             $deleteProgress->start();
 
@@ -99,12 +98,10 @@ class EventSubDeleteCommand extends EventSubListingCommand
 
             foreach ($subscriptions as $subscription) {
                 try {
-
                     $eventSubClient->deleteSubscription($subscription['id']);
                     $deleted++;
-
                 } catch (RequestException $exception) {
-                    $this->error($subscription['id'] . ' could not deleted');
+                    $this->error($subscription['id'].' could not deleted');
                 }
 
                 $deleteProgress->advance();
@@ -113,7 +110,7 @@ class EventSubDeleteCommand extends EventSubListingCommand
             $deleteProgress->finish();
             $this->newLine(2);
 
-            $this->info('Total EventSub deleted: ' . $deleted . '/' . $subscriptionsCount);
+            $this->info('Total EventSub deleted: '.$deleted.'/'.$subscriptionsCount);
         }
     }
 

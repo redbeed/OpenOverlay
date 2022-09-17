@@ -42,11 +42,13 @@ class BotConnection extends Model
         $this->attributes['service_refresh_token'] = $this->encryptString($value);
     }
 
-    private function decryptString(string $key): string {
+    private function decryptString(string $key): string
+    {
         return Crypt::decryptString($key);
     }
 
-    private function encryptString(string $value): string {
+    private function encryptString(string $value): string
+    {
         return Crypt::encryptString($value);
     }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Redbeed\OpenOverlay\Models\Twitch;
-
 
 use Carbon\Carbon;
 use Redbeed\OpenOverlay\Service\Twitch\DateTime;

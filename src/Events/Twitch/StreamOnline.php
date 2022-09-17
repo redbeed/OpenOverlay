@@ -31,7 +31,7 @@ class StreamOnline implements ShouldBroadcastNow
 
     public function broadcastOn(): Channel
     {
-        return new Channel('twitch.' . $this->twitchUser->service_user_id);
+        return new Channel('twitch.'.$this->twitchUser->service_user_id);
     }
 
     public function broadcastAs(): string

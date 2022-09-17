@@ -3,7 +3,6 @@
 namespace Redbeed\OpenOverlay\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Redbeed\OpenOverlay\Models\Twitch\EventSubscription;
 use Redbeed\OpenOverlay\Service\Twitch\EventSubClient;
@@ -34,11 +33,8 @@ class EventSubListingCommand extends Command
         parent::__construct();
     }
 
-
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle()
     {

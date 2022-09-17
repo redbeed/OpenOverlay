@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 
 class SecretCommand extends EventSubListingCommand
 {
-
     private const ENV_KEY = 'OVERLAY_SECRET';
 
     protected $signature = 'overlay:secret
@@ -17,10 +16,11 @@ class SecretCommand extends EventSubListingCommand
 
     public function handle(): void
     {
-        $currentSecret = env(self::ENV_KEY);
+        $currentSecret = config('openoverlay.webhook.twitch.secret');
 
-        if (!empty($currentSecret) && !$this->option('force')) {
+        if (! empty($currentSecret) && ! $this->option('force')) {
             $this->warn('You already have a secret');
+
             return;
         }
 
@@ -44,7 +44,7 @@ class SecretCommand extends EventSubListingCommand
         if (preg_match($secretKeyPattern, $envFileContent) === 0) {
             file_put_contents(
                 $envFilePath,
-                self::ENV_KEY . '=' . $key . PHP_EOL,
+                self::ENV_KEY.'='.$key.PHP_EOL,
                 FILE_APPEND
             );
 
@@ -57,7 +57,7 @@ class SecretCommand extends EventSubListingCommand
             $envFilePath,
             preg_replace(
                 $secretKeyPattern,
-                self::ENV_KEY . '=' . $key,
+                self::ENV_KEY.'='.$key,
                 $envFileContent
             )
         );
@@ -69,13 +69,14 @@ class SecretCommand extends EventSubListingCommand
     {
         if ($this->option('show')) {
             $this->info('New Secret Key:');
-            $this->info(self::ENV_KEY . '=' . $key);
+            $this->info(self::ENV_KEY.'='.$key);
         }
     }
 
     protected function keyReplacementPattern(): string
     {
-        $escaped = preg_quote('=' . env(self::ENV_KEY, ''), '/');
-        return "/^" . self::ENV_KEY . "{$escaped}/m";
+        $escaped = preg_quote('='.config('openoverlay.webhook.twitch.secret'), '/');
+
+        return '/^'.self::ENV_KEY."{$escaped}/m";
     }
 }

@@ -14,7 +14,6 @@ class CreateUserBotsEnabledTable extends Migration
     public function up()
     {
         Schema::create('users_bots_enabled', function (Blueprint $table) {
-
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('bot_id');
             $table->timestamps();

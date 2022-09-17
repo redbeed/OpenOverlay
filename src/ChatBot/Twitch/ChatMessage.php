@@ -2,38 +2,46 @@
 
 namespace Redbeed\OpenOverlay\ChatBot\Twitch;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Redbeed\OpenOverlay\Models\BotConnection;
 use Redbeed\OpenOverlay\Models\Twitch\Emote;
 
 class ChatMessage
 {
-    /** @var string */
-    public $username;
+    public string $username;
 
-    /** @var string */
-    public $channel;
+    public string $channel;
 
-    /** @var string */
-    public $message;
+    public string $message;
 
     /** @var Emote[] */
-    public $possibleEmotes;
+    public array $possibleEmotes;
 
-    public function __construct(string $channel, string $username, string $message)
+    public ?\Illuminate\Foundation\Auth\User $channelUser;
+
+    public ?BotConnection $bot;
+
+    public function __construct(string $channel, string $username, string $message, ?BotConnection $bot = null)
     {
         $this->channel = $channel;
         $this->username = trim($username);
         $this->message = trim($message);
+
+        $this->bot = $bot;
+        if ($this->bot) {
+            $this->channelUser = $this->bot->users()->where('name', $this->channel)->first();
+        }
     }
 
-    public static function parseIRCMessage(string $message): ?ChatMessage
+    public static function parseIRCMessage(BotConnection $bot, string $message): ?ChatMessage
     {
         try {
             preg_match("/:(.*)\!.*#(\S+) :(.*)/", $message, $matches);
 
-            return new ChatMessage($matches[2], $matches[1], $matches[3]);
+            return new ChatMessage($matches[2], $matches[1], $matches[3], $bot);
         } catch (\Exception $exception) {
-            echo $exception->getMessage() . "\r\n";
+            Log::error($exception);
         }
 
         return null;
@@ -44,16 +52,17 @@ class ChatMessage
         $emoteList = collect($this->possibleEmotes)
             ->map(function (Emote $emote) use ($emoteSize) {
                 $name = htmlspecialchars_decode($emote->name);
-                $regex = '/'.preg_quote($name, '/') . '(\s|$)/';
+                $regex = '/'.preg_quote($name, '/').'(\s|$)/';
 
                 if (@preg_match($regex, null) === false) {
-                    echo "Emote Regex '" . $regex . "' is invalid \r\n";
+                    echo "Emote Regex '".$regex."' is invalid \r\n";
+
                     return null;
                 }
 
                 return [
                     'name' => $regex,
-                    'image' => '<img src="' . $emote->image($emoteSize) . '" class="twitch-emote" alt="' . Str::slug($emote->name) . '"> ',
+                    'image' => '<img src="'.$emote->image($emoteSize).'" class="twitch-emote" alt="'.Str::slug($emote->name).'"> ',
                 ];
             });
 

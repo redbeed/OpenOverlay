@@ -6,11 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Redbeed\OpenOverlay\Events\UserConnectionChanged;
 use Redbeed\OpenOverlay\Models\User\Connection;
-use Redbeed\OpenOverlay\Service\Twitch\UsersClient;
 
 class AuthController extends SocialiteController
 {
-
     protected function callbackUrl(): string
     {
         return route('open_overlay.connection.callback');

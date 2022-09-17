@@ -9,7 +9,7 @@ class StreamerOnline
 {
     private static function cacheKey(string $streamerId, string $platform = 'twitch'): string
     {
-        return $platform . '.streamer.' . $streamerId . '.online.';
+        return $platform.'.streamer.'.$streamerId.'.online.';
     }
 
     public static function onlineTime(string $streamerId, string $platform = 'twitch'): ?Carbon
@@ -42,5 +42,4 @@ class StreamerOnline
     {
         Cache::pull(self::cacheKey($streamerId, $platform));
     }
-
 }

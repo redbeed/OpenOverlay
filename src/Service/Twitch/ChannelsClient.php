@@ -17,4 +17,12 @@ class ChannelsClient extends ApiClient
             ])
             ->request('GET', 'channels');
     }
+
+    public function lastGame(string $broadcasterId)
+    {
+        $channels = (new self)->get($broadcasterId);
+        $channel = head($channels['data']);
+
+        return $channel['game_name'];
+    }
 }

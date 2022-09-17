@@ -2,11 +2,17 @@
 
 namespace Redbeed\OpenOverlay\Service\Twitch;
 
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Arr;
+use Redbeed\OpenOverlay\Exceptions\AppTokenMissing;
 
 class UsersClient extends ApiClient
 {
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function byId(string $id): array
     {
         return $this
@@ -19,6 +25,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function byUsername(string $username): array
     {
         return $this
@@ -31,6 +41,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function followers(string $twitchUserId): array
     {
         return $this
@@ -43,6 +57,10 @@ class UsersClient extends ApiClient
             ->request('GET', 'users/follows');
     }
 
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
     public function allFollowers(string $twitchUserId): array
     {
         $firstResponse = $this
@@ -77,5 +95,24 @@ class UsersClient extends ApiClient
         $firstResponse['pagination'] = [];
 
         return $firstResponse;
+    }
+
+    /**
+     * @throws AppTokenMissing
+     * @throws GuzzleException
+     */
+    public static function lastGame(string $username): string
+    {
+        $users = (new self)->byUsername($username);
+        if (empty($users['data']) || count($users['data']) === 0) {
+            return '';
+        }
+
+        $user = Arr::first($users['data']);
+        if (empty($user) || empty($user['id'])) {
+            return '';
+        }
+
+        return (new ChannelsClient())->lastGame($user['id']);
     }
 }

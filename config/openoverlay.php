@@ -33,12 +33,12 @@ return [
          * You can use :username, :twitchUrl and :gameName for your message.
          */
         \Redbeed\OpenOverlay\Listeners\AutoShoutOutRaid::class => [
-            'message' => 'Follow :username over at :twitchUrl. They were last playing :gameName'
+            'message' => 'Follow :username over at :twitchUrl. They were last playing :gameName',
         ],
 
         \Redbeed\OpenOverlay\Support\ViewerInChat::class => [
-            'reset' => -1
-        ]
+            'reset' => -1,
+        ],
     ],
 
     'webhook' => [
@@ -55,7 +55,7 @@ return [
 
             /**
              * Your personal and unique secret is used to validate a twitch callback
-             * If you change your secret all previous configures webhook callbacks will be end as invalid
+             * If you change your secret all previous configures webhook callbacks will be ended as invalid
              */
             'secret' => env('OVERLAY_SECRET'),
 
@@ -72,20 +72,8 @@ return [
     ],
 
     'bot' => [
-        'commands' => [
-
-            'simple' => [
-                '!hello' => 'Hello %username%! How are you doing?',
-            ],
-
-            'advanced' => [
-                \Redbeed\OpenOverlay\ChatBot\Commands\HelloWorldBotCommand::class,
-                \Redbeed\OpenOverlay\ChatBot\Commands\ShoutOutBotCommand::class,
-            ]
-        ],
-
         'schedules' => [
             \Redbeed\OpenOverlay\Console\Scheduling\MadeWithChatBotScheduling::class,
-        ]
-    ]
+        ],
+    ],
 ];

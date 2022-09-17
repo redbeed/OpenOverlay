@@ -16,6 +16,6 @@ class UserSubscriber extends Model
         'twitch_user_id',
         'subscriber_user_id', 'subscriber_username', 'subscriber_login_name',
         'tier', 'tier_name',
-        'is_gift', 'gifter_user_id', 'gifter_username', 'gifter_login_name'
+        'is_gift', 'gifter_user_id', 'gifter_username', 'gifter_login_name',
     ];
 }

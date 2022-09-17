@@ -25,15 +25,13 @@ class WebhookController extends Controller
         }
 
         $event = $request->get('event');
-        if (!empty($event) && in_array($messageType, config('openoverlay.webhook.twitch.subscribe'), true)) {
-
+        if (! empty($event) && in_array($messageType, config('openoverlay.webhook.twitch.subscribe'), true)) {
             return $this->receiveNotification(
                 $messageId,
                 $messageType,
                 $messageTimestamp,
                 $event
             );
-
         }
 
         return $request->get('challenge');
@@ -62,6 +60,5 @@ class WebhookController extends Controller
         }
 
         return \response('Event received', $newEvent->wasRecentlyCreated ? Response::HTTP_CREATED : Response::HTTP_OK);
-
     }
 }

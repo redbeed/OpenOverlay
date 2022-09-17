@@ -10,7 +10,7 @@ class ViewerInChat
 {
     private static function cacheKey(Connection $streamer, string $platform = 'twitch'): string
     {
-        return $platform . '.streamer.' . $streamer->service_user_id . '.viewer.' . StreamerOnline::onlineTime($streamer->service_user_id, $platform);
+        return $platform.'.streamer.'.$streamer->service_user_id.'.viewer.'.StreamerOnline::onlineTime($streamer->service_user_id, $platform);
     }
 
     public static function list(Connection $streamer, string $platform = 'twitch'): array

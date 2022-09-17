@@ -3,9 +3,7 @@
 namespace Redbeed\OpenOverlay\Console\Commands\Make;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class MakeBotSchedulingCommand extends GeneratorCommand
 {

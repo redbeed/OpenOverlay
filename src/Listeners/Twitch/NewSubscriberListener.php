@@ -17,13 +17,13 @@ class NewSubscriberListener extends EventListener
         $subscriberData = $event->event->event_data;
 
         UserSubscriber::firstOrCreate([
-            'twitch_user_id'     => $event->event->event_user_id,
+            'twitch_user_id' => $event->event->event_user_id,
             'subscriber_user_id' => $subscriberData['user_id'],
         ], [
             'subscriber_username' => $subscriberData['user_name'],
-            'tier'                => $subscriberData['user_name'],
-            'tier_name'           => $subscriberData['plan_name'],
-            'is_gift'             => $subscriberData['is_gift'],
+            'tier' => $subscriberData['user_name'],
+            'tier_name' => $subscriberData['plan_name'] ?? '',
+            'is_gift' => $subscriberData['is_gift'],
         ]);
     }
 }

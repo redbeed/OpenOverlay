@@ -107,7 +107,7 @@ To add a bot you need to link your app with the bot twitch account.
 
 1. Open `${APP_URL}/connection/bot/redirect` with your laravel-app.
 2. Login into your Twitch-Bot account with your Twitch Application.
-3. After redirect you need to manually connect your laravel-Account with a bot.
+3. After redirect, you need to manually connect your laravel-Account with a bot.
 4. Open Your Database table "bot_connections" and connect your bot with your user.
 5. Restart the Bot Artisan Bot
 

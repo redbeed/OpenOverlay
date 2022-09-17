@@ -2,13 +2,13 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands\ChatBot;
 
+use function Ratchet\Client\connect;
 use Ratchet\Client\WebSocket;
 use Redbeed\OpenOverlay\ChatBot\Twitch\ConnectionHandler;
 use Redbeed\OpenOverlay\Models\BotConnection;
 use Redbeed\OpenOverlay\Models\User\Connection;
 use Redbeed\OpenOverlay\Models\User\UserOpenOverlay;
 use Redbeed\OpenOverlay\OpenOverlay;
-use function Ratchet\Client\connect;
 
 class SendMessageCommand extends RuntimeCommand
 {
@@ -35,11 +35,13 @@ class SendMessageCommand extends RuntimeCommand
 
         if (trim($message) === null) {
             $this->error('Message not filled');
+
             return;
         }
 
         if ($user === null) {
             $this->error('User not found');
+
             return;
         }
 
@@ -47,6 +49,7 @@ class SendMessageCommand extends RuntimeCommand
 
         if ($bot === null) {
             $this->error('Bot not found');
+
             return;
         }
 
@@ -59,7 +62,6 @@ class SendMessageCommand extends RuntimeCommand
                 $twitchUsers = $user->connections()->where('service', 'twitch')->get();
 
                 foreach ($twitchUsers as $twitchUser) {
-
                     $connectionHandler->joinChannel($twitchUser);
                     $connectionHandler->sendChatMessage($twitchUser->service_username, $message);
 
@@ -72,7 +74,6 @@ class SendMessageCommand extends RuntimeCommand
                         });
                     });
                 }
-
             }, function ($e) {
                 echo "Could not connect: {$e->getMessage()}\n";
             });
@@ -90,6 +91,7 @@ class SendMessageCommand extends RuntimeCommand
     private function getUser()
     {
         $userId = $this->argument('userId');
+
         return (OpenOverlay::userModel())::find($userId);
     }
 

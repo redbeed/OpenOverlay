@@ -2,10 +2,8 @@
 
 namespace Redbeed\OpenOverlay;
 
-
 class OpenOverlay
 {
-
     public static function userModel(): string
     {
         return config('auth.providers.users.model');

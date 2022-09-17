@@ -4,7 +4,6 @@ namespace Redbeed\OpenOverlay\Http\Controllers\Connection;
 
 class AppTokenController extends SocialiteController
 {
-
     protected $socialiteDriver = 'twitch_client_credentials';
 
     public function __construct()

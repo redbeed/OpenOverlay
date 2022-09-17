@@ -2,14 +2,12 @@
 
 namespace Redbeed\OpenOverlay\Console\Commands;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelCheerFake;
+use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelFollowFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelRaidFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelSubscribeFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelUpdateFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\Fake;
-use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\ChannelFollowFake;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOffline;
 use Redbeed\OpenOverlay\Console\Commands\BroadcastFaker\StreamOnline;
 use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
@@ -62,7 +60,7 @@ class EventBroadcastFaker extends EventSubListingCommand
             return;
         }
 
-        if (!array_key_exists($type, $this->types)) {
+        if (! array_key_exists($type, $this->types)) {
             $this->error('Type is not provided');
 
             return;
@@ -77,6 +75,6 @@ class EventBroadcastFaker extends EventSubListingCommand
         ]);
 
         broadcast(new EventReceived($fakeEvent));
-        $this->info('Event ' . $type . ' for ' . $twitchUserId . ' fired');
+        $this->info('Event '.$type.' for '.$twitchUserId.' fired');
     }
 }

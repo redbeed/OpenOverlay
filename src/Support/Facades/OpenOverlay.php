@@ -1,6 +1,6 @@
 <?php
 
-namespace Redbeed\OpenOverlay\Facades;
+namespace Redbeed\OpenOverlay\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

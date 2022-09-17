@@ -35,11 +35,10 @@ class ChatBotScheduling extends Schedule
 
     public function getJob(Schedule $schedule, $user): ?Event
     {
-        if (!$this->valid($user)) {
+        if (! $this->valid($user)) {
             return null;
         }
 
         return $this->schedule($schedule->command(SendMessageCommand::class, [$user->id, $this->message()]));
     }
-
 }

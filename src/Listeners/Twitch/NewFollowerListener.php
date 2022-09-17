@@ -5,11 +5,9 @@ namespace Redbeed\OpenOverlay\Listeners\Twitch;
 use Carbon\Carbon;
 use Redbeed\OpenOverlay\Events\Twitch\EventReceived;
 use Redbeed\OpenOverlay\Models\Twitch\UserFollowers;
-use Redbeed\OpenOverlay\Models\Twitch\UserSubscriber;
 
 class NewFollowerListener extends EventListener
 {
-
     protected function eventType(): string
     {
         return 'channel.follow';
@@ -26,11 +24,11 @@ class NewFollowerListener extends EventListener
 
         if (empty($followerModal)) {
             UserFollowers::create([
-                'twitch_user_id'    => $event->event->event_user_id,
-                'follower_user_id'  => $followerData['user_id'],
+                'twitch_user_id' => $event->event->event_user_id,
+                'follower_user_id' => $followerData['user_id'],
                 'follower_username' => $followerData['user_name'],
-                'followed_at'       => Carbon::parse($followerData['followed_at']),
-                'deleted_at'        => null,
+                'followed_at' => Carbon::parse($followerData['followed_at']),
+                'deleted_at' => null,
             ]);
 
             return;

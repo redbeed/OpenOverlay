@@ -36,7 +36,7 @@ class RegisterUserTwitchWebhooks
 
     public function clearBroadcasterSubscriptions()
     {
-        $this->apiClient->deleteSubByBroadcasterId((string)$this->connection->service_user_id);
+        $this->apiClient->deleteSubByBroadcasterId((string) $this->connection->service_user_id);
     }
 
     public function register(string $type): bool
@@ -61,7 +61,7 @@ class RegisterUserTwitchWebhooks
 
     private function registerCondition($type): array
     {
-        $broadcasterId = (string)$this->connection->service_user_id;
+        $broadcasterId = (string) $this->connection->service_user_id;
 
         if ($type === 'channel.raid') {
             return ['to_broadcaster_user_id' => $broadcasterId];
